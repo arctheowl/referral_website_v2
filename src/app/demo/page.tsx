@@ -45,6 +45,20 @@ const FLOWS: Flow[] = [
       '5. Complete referral form (if selected)'
     ]
   },
+    {
+    id: 'waiting',
+    name: 'Waiting in Queue',
+    description: 'See the waiting room experience',
+    status: 'waiting',
+    icon: ClockIcon,
+    color: 'purple',
+    steps: [
+      '1. Already eligible',
+      '2. In waiting room',
+      '3. See countdown timer',
+      '4. View queue position'
+    ]
+  },
   {
     id: 'selected',
     name: 'Selected User',
@@ -74,20 +88,7 @@ const FLOWS: Flow[] = [
       '4. View resources and waitlist options'
     ]
   },
-  {
-    id: 'waiting',
-    name: 'Waiting in Queue',
-    description: 'See the waiting room experience',
-    status: 'waiting',
-    icon: ClockIcon,
-    color: 'purple',
-    steps: [
-      '1. Already eligible',
-      '2. In waiting room',
-      '3. See countdown timer',
-      '4. View queue position'
-    ]
-  },
+
   {
     id: 'completed',
     name: 'Successfully Submitted',

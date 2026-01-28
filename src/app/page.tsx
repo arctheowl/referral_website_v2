@@ -358,7 +358,8 @@ export default function WaitingRoomNew() {
               Referral Program Waiting Room
             </h1>
             <p className="text-lg text-black">
-              {isResumingSession ? "Welcome back! You're in the queue." : "Welcome! You've joined the queue."}
+              {/* {isResumingSession ? "Welcome back! You're in the queue." :  */}
+              Welcome! You've joined the queue.
             </p>
           </div>
 
@@ -433,7 +434,7 @@ export default function WaitingRoomNew() {
           </div>
 
           {/* Session Info */}
-          <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
+          {/* <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
             <h3 className="text-xl font-semibold text-black mb-4">Session Information</h3>
             <div className="space-y-2 text-black">
               <p><strong>Session ID:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-black">{sessionId}</code></p>
@@ -444,10 +445,10 @@ export default function WaitingRoomNew() {
               <p><strong>Countdown Status:</strong> <span className="text-red-600">{countdownCompleted ? 'Completed' : 'Running'}</span></p>
               <p><strong>Selection Triggered:</strong> <span className="text-yellow-600">{userSelectionTriggered ? 'Yes' : 'No'}</span></p>
             </div>
-          </div>
+          </div> */}
 
           {/* Debug Controls - Only show in testing/development mode */}
-          {shouldShowDebugInfo() && (
+          {/* {shouldShowDebugInfo() && (
             <div className="mt-8 bg-yellow-50 rounded-lg shadow-lg p-6">
               <h3 className="text-xl font-semibold text-black mb-4">Debug Controls</h3>
               <div className="space-x-4">
@@ -465,11 +466,11 @@ export default function WaitingRoomNew() {
                 </a>
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Footer */}
           <div className="mt-8 text-center text-sm text-black">
-            <p>Referral Program V2 - Simplified Version</p>
+            <p>Referral Program V2</p>
           </div>
         </div>
       </div>

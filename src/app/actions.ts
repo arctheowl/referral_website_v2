@@ -339,3 +339,43 @@ export async function checkFormSubmissionStatus(sessionId: string) {
     };
   }
 }
+
+// Eligibility check actions
+export async function submitEligibilityCheck(sessionId: string, eligibilityData: { schoolYear: string; catchmentTown: string; canAttendHospital: boolean }) {
+  try {
+    const sql = getSql();
+    
+    // Check if eligibility already exists
+    const existing = await sql`
+      SELECT id FROM eligibility_checks WHERE session_id = ${sessionId};
+    `;
+    
+    if (existing.length > 0) {
+      return { success: true, alreadySubmitted: true };
+    }
+    
+    // Insert eligibility check
+    await sql`
+      INSERT INTO eligibility_checks (session_id, school_year, catchment_town, can_attend_hospital)
+      VALUES (${sessionId}, ${eligibilityData.schoolYear}, ${eligibilityData.catchmentTown}, ${eligibilityData.canAttendHospital});
+    `;
+    
+    return { success: true, alreadySubmitted: false };
+  } catch (error) {
+    console.error("Error submitting eligibility check:", error);
+    return { success: false, error: "Failed to submit eligibility check" };
+  }
+}
+
+export async function checkEligibilityStatus(sessionId: string) {
+  try {
+    const sql = getSql();
+    const data = await sql`
+      SELECT * FROM eligibility_checks WHERE session_id = ${sessionId};
+    `;
+    return data[0] || null;
+  } catch (error) {
+    console.error("Error checking eligibility status:", error);
+    return null;
+  }
+}

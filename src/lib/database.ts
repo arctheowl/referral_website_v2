@@ -103,6 +103,18 @@ export const createTables = async () => {
     );
   `;
 
+  // Eligibility check table (pre-screening before waiting room)
+  await sql`
+    CREATE TABLE IF NOT EXISTS eligibility_checks (
+      id SERIAL PRIMARY KEY,
+      session_id VARCHAR(255) UNIQUE NOT NULL,
+      school_year VARCHAR(50) NOT NULL,
+      catchment_town VARCHAR(255) NOT NULL,
+      can_attend_hospital BOOLEAN NOT NULL,
+      submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
   // Initialize default values
   await sql`
     INSERT INTO countdown_timer (start_time, end_time, is_active)

@@ -3,6 +3,9 @@
 import { CheckCircleIcon, DocumentTextIcon, ClockIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import TestingNavigation from "@/components/TestingNavigation";
 import FlowEnforcement from "@/components/FlowEnforcement";
+import { isDemoMode } from "@/lib/config";
+import { getMockSession } from "@/lib/mock-data";
+import { useEffect, useState } from "react";
 
 export default function Submitted() {
   return (

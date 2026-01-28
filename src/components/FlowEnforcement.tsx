@@ -6,9 +6,11 @@ import { XCircleIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { 
   isProductionMode, 
   canAccessPageDirectly, 
-  getCurrentConfig 
+  getCurrentConfig,
+  isDemoMode
 } from "@/lib/config";
 import { getUserSession } from "@/app/actions";
+import { getMockSession } from "@/lib/mock-data";
 
 interface FlowEnforcementProps {
   children: React.ReactNode;
@@ -29,8 +31,22 @@ export default function FlowEnforcement({
 
   useEffect(() => {
     const enforceFlow = async () => {
-      // Skip enforcement in development/testing modes
+      // Skip enforcement in development/testing/demo modes
       // Also skip if we're in mock mode or testing mode
+      if (isDemoMode()) {
+        // In demo mode, check mock session
+        const existingSessionId = localStorage.getItem('referral_session_id');
+        if (existingSessionId) {
+          const mockSession = getMockSession(existingSessionId);
+          if (requiredStatus && mockSession && mockSession.status !== requiredStatus) {
+            // In demo mode, allow access but log the mismatch
+            console.log(`Demo mode: Status mismatch (expected ${requiredStatus}, got ${mockSession.status}), allowing access`);
+          }
+        }
+        setLoading(false);
+        return;
+      }
+      
       if (!isProductionMode() || 
           process.env.NEXT_PUBLIC_TESTING_MODE === 'true' || 
           process.env.NEXT_PUBLIC_MOCK_MODE === 'true' ||

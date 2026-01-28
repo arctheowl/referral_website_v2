@@ -15,7 +15,8 @@ import {
 import { getUserSession, addToWaitlist } from "../actions";
 import TestingNavigation from "@/components/TestingNavigation";
 import FlowEnforcement from "@/components/FlowEnforcement";
-import { isTestingMode } from "@/lib/config";
+import { isTestingMode, isDemoMode } from "@/lib/config";
+import { getMockSession } from "@/lib/mock-data";
 
 interface WaitlistData {
   name: string;
@@ -68,7 +69,25 @@ function NotSelectedContent() {
     const checkUserStatus = async () => {
       if (!sessionId) return;
 
-      // Skip database validation in testing mode
+      // Skip database validation in testing/demo mode
+      if (isDemoMode()) {
+        console.log("Demo mode: Checking mock user status");
+        const mockSession = getMockSession(sessionId);
+        if (mockSession && mockSession.status === 'rejected') {
+          console.log("Demo mode: User is rejected, showing not-selected page");
+          setLoading(false);
+          return;
+        } else if (mockSession) {
+          console.log("Demo mode: User status is", mockSession.status, "- allowing access for demo");
+          setLoading(false);
+          return;
+        } else {
+          console.log("Demo mode: No mock session found, allowing access");
+          setLoading(false);
+          return;
+        }
+      }
+
       if (isTestingMode()) {
         console.log("Testing mode: Skipping user status validation");
         setLoading(false);
@@ -98,7 +117,22 @@ function NotSelectedContent() {
     setSubmitting(true);
 
     try {
-      const result = await addToWaitlist(sessionId, waitlistData);
+      let result;
+      if (isDemoMode()) {
+        // In demo mode, simulate waitlist submission
+        console.log("Demo mode: Simulating waitlist submission");
+        // Store in localStorage for demo
+        const waitlistKey = `demo_waitlist_${sessionId}`;
+        localStorage.setItem(waitlistKey, JSON.stringify({
+          ...waitlistData,
+          sessionId,
+          added_at: new Date().toISOString()
+        }));
+        result = { success: true };
+      } else {
+        result = await addToWaitlist(sessionId, waitlistData);
+      }
+      
       if (result.success) {
         setWaitlistSuccess(true);
       }
@@ -177,7 +211,7 @@ function NotSelectedContent() {
                           required
                           value={waitlistData.name}
                           onChange={(e) => handleInputChange('name', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                         />
                       </div>
                       
@@ -190,7 +224,7 @@ function NotSelectedContent() {
                           required
                           value={waitlistData.email}
                           onChange={(e) => handleInputChange('email', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                         />
                       </div>
                       
@@ -202,7 +236,7 @@ function NotSelectedContent() {
                           type="text"
                           value={waitlistData.childName}
                           onChange={(e) => handleInputChange('childName', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                         />
                       </div>
                       
@@ -214,7 +248,7 @@ function NotSelectedContent() {
                           type="date"
                           value={waitlistData.childDOB}
                           onChange={(e) => handleInputChange('childDOB', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                         />
                       </div>
                       
@@ -226,7 +260,7 @@ function NotSelectedContent() {
                           type="text"
                           value={waitlistData.postcode}
                           onChange={(e) => handleInputChange('postcode', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                         />
                       </div>
                       
@@ -275,7 +309,7 @@ function NotSelectedContent() {
                     <PhoneIcon className="h-4 w-4 mr-2" />
                     Local Support Services
                   </h3>
-                  <p className="text-sm text-blue-800">
+                  <p className="text-sm text-blue-900">
                     Contact your local council&apos;s children&apos;s services department for immediate support and guidance.
                   </p>
                 </div>
@@ -285,7 +319,7 @@ function NotSelectedContent() {
                     <AcademicCapIcon className="h-4 w-4 mr-2" />
                     Educational Support
                   </h3>
-                  <p className="text-sm text-green-800">
+                  <p className="text-sm text-green-900">
                     Speak with your child&apos;s school SENCO (Special Educational Needs Coordinator) about available support.
                   </p>
                 </div>
@@ -295,7 +329,7 @@ function NotSelectedContent() {
                     <ChatBubbleLeftRightIcon className="h-4 w-4 mr-2" />
                     Parent Support Groups
                   </h3>
-                  <p className="text-sm text-purple-800">
+                  <p className="text-sm text-purple-900">
                     Join local parent support groups and online communities for peer support and advice.
                   </p>
                 </div>
@@ -418,10 +452,10 @@ function NotSelectedContent() {
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <h3 className="font-semibold text-red-800 mb-2">Crisis Support</h3>
-                <p className="text-sm text-red-700 mb-2">
+                <p className="text-sm text-red-900 mb-2">
                   If you or your child are in immediate danger or experiencing a mental health crisis:
                 </p>
-                <ul className="text-sm text-red-700 space-y-1">
+                <ul className="text-sm text-red-900 space-y-1">
                   <li>• Call 999 for emergency services</li>
                   <li>• Contact your local A&E department</li>
                   <li>• Call Samaritans: 116 123 (free, 24/7)</li>
@@ -429,10 +463,10 @@ function NotSelectedContent() {
               </div>
               <div>
                 <h3 className="font-semibold text-red-800 mb-2">Mental Health Support</h3>
-                <p className="text-sm text-red-700 mb-2">
+                <p className="text-sm text-red-900 mb-2">
                   For mental health support and advice:
                 </p>
-                <ul className="text-sm text-red-700 space-y-1">
+                <ul className="text-sm text-red-900 space-y-1">
                   <li>• Childline: 0800 1111</li>
                   <li>• YoungMinds: 0808 802 5544</li>
                   <li>• Mind: 0300 123 3393</li>

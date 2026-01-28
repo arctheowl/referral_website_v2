@@ -9,7 +9,8 @@ import {
   CheckCircleIcon,
   CogIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
+  ClipboardDocumentCheckIcon
 } from "@heroicons/react/24/outline";
 import { shouldShowAllNavigation, shouldShowDebugInfo, isTestingMode } from "@/lib/config";
 
@@ -27,6 +28,18 @@ export default function TestingNavigation({ currentPage = "" }: TestingNavigatio
   }
 
   const pages = [
+    {
+      name: "Demo Mode",
+      path: "/demo",
+      icon: ClipboardDocumentCheckIcon,
+      description: "Demo flow selector (no database required)"
+    },
+    {
+      name: "Eligibility Check",
+      path: "/eligibility",
+      icon: ClipboardDocumentCheckIcon,
+      description: "Pre-screening form before waiting room"
+    },
     {
       name: "Main Page (Waiting Room)",
       path: "/",

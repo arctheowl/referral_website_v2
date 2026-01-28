@@ -264,7 +264,7 @@ function ReferralFormContent() {
             {shouldShowDebugInfo() && formSubmissionStatus && (
               <div className="mt-4 p-4 bg-blue-50 rounded-lg">
                 <h3 className="text-sm font-semibold text-blue-900 mb-2">Session Status</h3>
-                <div className="text-sm text-blue-800 space-y-1">
+                <div className="text-sm text-blue-900 space-y-1">
                   <p><strong>Can Submit:</strong> {formSubmissionStatus.canSubmit ? 'Yes' : 'No'}</p>
                   <p><strong>Already Submitted:</strong> {formSubmissionStatus.alreadySubmitted ? 'Yes' : 'No'}</p>
                   <p><strong>Session Status:</strong> {formSubmissionStatus.sessionStatus}</p>
@@ -294,7 +294,7 @@ function ReferralFormContent() {
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
                 <div className="flex items-center">
                   <XCircleIcon className="h-5 w-5 text-red-500 mr-2" />
-                  <span className="text-red-700">{error}</span>
+                  <span className="text-red-900">{error}</span>
                 </div>
               </div>
             )}
@@ -315,7 +315,7 @@ function ReferralFormContent() {
                       required
                       value={formData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     />
                   </div>
 
@@ -329,7 +329,7 @@ function ReferralFormContent() {
                       required
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     />
                   </div>
 
@@ -342,7 +342,7 @@ function ReferralFormContent() {
                       type="email"
                       value={formData.secondEmail}
                       onChange={(e) => handleInputChange('secondEmail', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     />
                   </div>
 
@@ -356,7 +356,7 @@ function ReferralFormContent() {
                       required
                       value={formData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     />
                   </div>
                 </div>
@@ -370,7 +370,7 @@ function ReferralFormContent() {
                     rows={3}
                     value={formData.address}
                     onChange={(e) => handleInputChange('address', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                   />
                 </div>
 
@@ -382,7 +382,7 @@ function ReferralFormContent() {
                     type="text"
                     value={formData.signposted}
                     onChange={(e) => handleInputChange('signposted', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                   />
                 </div>
               </div>
@@ -403,7 +403,7 @@ function ReferralFormContent() {
                       required
                       value={formData.childName}
                       onChange={(e) => handleInputChange('childName', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     />
                   </div>
 
@@ -417,7 +417,7 @@ function ReferralFormContent() {
                       required
                       value={formData.childDOB}
                       onChange={(e) => handleInputChange('childDOB', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     />
                   </div>
                 </div>
@@ -430,7 +430,7 @@ function ReferralFormContent() {
                     type="text"
                     value={formData.parentNames}
                     onChange={(e) => handleInputChange('parentNames', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                   />
                 </div>
 
@@ -442,7 +442,7 @@ function ReferralFormContent() {
                     rows={3}
                     value={formData.siblings}
                     onChange={(e) => handleInputChange('siblings', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     placeholder="Please provide details about any siblings, their ages, and any relevant information"
                   />
                 </div>
@@ -456,7 +456,7 @@ function ReferralFormContent() {
                       type="text"
                       value={formData.schoolName}
                       onChange={(e) => handleInputChange('schoolName', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     />
                   </div>
 
@@ -468,7 +468,7 @@ function ReferralFormContent() {
                       type="text"
                       value={formData.schoolYear}
                       onChange={(e) => handleInputChange('schoolYear', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     />
                   </div>
                 </div>
@@ -488,7 +488,7 @@ function ReferralFormContent() {
                     rows={4}
                     value={formData.diagnosis}
                     onChange={(e) => handleInputChange('diagnosis', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     placeholder="Please provide details about any diagnoses, assessments, or evaluations"
                   />
                 </div>
@@ -498,12 +498,12 @@ function ReferralFormContent() {
                     <CalendarIcon className="h-4 w-4 inline mr-1" />
                     Diagnosis Date
                   </label>
-                  <input
-                    type="date"
-                    value={formData.diagnosisDate}
-                    onChange={(e) => handleInputChange('diagnosisDate', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
+                    <input
+                      type="date"
+                      value={formData.diagnosisDate}
+                      onChange={(e) => handleInputChange('diagnosisDate', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
+                    />
                 </div>
 
                 <div>
@@ -514,7 +514,7 @@ function ReferralFormContent() {
                     rows={3}
                     value={formData.medication}
                     onChange={(e) => handleInputChange('medication', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     placeholder="Please list any current medications, dosages, and frequency"
                   />
                 </div>
@@ -527,7 +527,7 @@ function ReferralFormContent() {
                     rows={3}
                     value={formData.professionals}
                     onChange={(e) => handleInputChange('professionals', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     placeholder="Please list any doctors, therapists, or other healthcare professionals involved in your child's care"
                   />
                 </div>
@@ -540,7 +540,7 @@ function ReferralFormContent() {
                     rows={3}
                     value={formData.eligibility}
                     onChange={(e) => handleInputChange('eligibility', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     placeholder="Please provide any information about eligibility criteria or requirements"
                   />
                 </div>
@@ -560,7 +560,7 @@ function ReferralFormContent() {
                     rows={4}
                     value={formData.interests}
                     onChange={(e) => handleInputChange('interests', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     placeholder="Please describe your child's interests, hobbies, strengths, and what they enjoy doing"
                   />
                 </div>
@@ -573,7 +573,7 @@ function ReferralFormContent() {
                     rows={4}
                     value={formData.areasOfDifficulty}
                     onChange={(e) => handleInputChange('areasOfDifficulty', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     placeholder="Please describe any areas where your child experiences difficulties or challenges"
                   />
                 </div>
@@ -586,7 +586,7 @@ function ReferralFormContent() {
                     rows={3}
                     value={formData.dailySkills}
                     onChange={(e) => handleInputChange('dailySkills', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     placeholder="Please describe your child's daily living skills and independence level"
                   />
                 </div>
@@ -599,7 +599,7 @@ function ReferralFormContent() {
                     rows={3}
                     value={formData.additionalSupport}
                     onChange={(e) => handleInputChange('additionalSupport', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900"
                     placeholder="Please describe any additional support or accommodations your child may need"
                   />
                 </div>

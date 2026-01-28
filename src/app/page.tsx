@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClockIcon, UsersIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import { getCountdownTimer, getQueueStatus, createUserSession, getUserSession, selectUsersForReferral } from "./actions";
+import { getCountdownTimer, getQueueStatus, createUserSession, getUserSession, selectUsersForReferral, checkEligibilityStatus } from "./actions";
 import TestingNavigation from "@/components/TestingNavigation";
-import { shouldShowDebugInfo } from "@/lib/config";
+import { shouldShowDebugInfo, isTestingMode, isDemoMode } from "@/lib/config";
+import { useDemoSession, useDemoTimer, useDemoQueue } from "@/lib/demo-hooks";
+import { getMockEligibility, getMockSession, getMockTimer, getMockQueue, createMockSession } from "@/lib/mock-data";
 
 export default function WaitingRoomNew() {
   const router = useRouter();
@@ -20,6 +22,11 @@ export default function WaitingRoomNew() {
   const [dataLoaded, setDataLoaded] = useState(false);
   const [countdownCompleted, setCountdownCompleted] = useState(false);
   const [userSelectionTriggered, setUserSelectionTriggered] = useState(false);
+  
+  // Demo mode hooks
+  const { session: demoSession, createSession: createDemoSession } = useDemoSession(sessionId);
+  const { timer: demoTimer } = useDemoTimer();
+  const { queue: demoQueue } = useDemoQueue();
 
   // Session ID setup and database initialization
   useEffect(() => {
@@ -28,53 +35,109 @@ export default function WaitingRoomNew() {
       
       // Set up session ID
       const existingSessionId = localStorage.getItem('referral_session_id');
+      let currentSessionId: string;
       
       if (existingSessionId) {
         console.log("Found existing session ID:", existingSessionId);
+        currentSessionId = existingSessionId;
         setSessionId(existingSessionId);
         setIsResumingSession(true);
       } else {
         const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         console.log("Created new session ID:", newSessionId);
         localStorage.setItem('referral_session_id', newSessionId);
+        currentSessionId = newSessionId;
         setSessionId(newSessionId);
         setIsResumingSession(false);
       }
       
-      // Load data from database
+      // Check eligibility status (skip in testing/demo mode)
+      if (isDemoMode()) {
+        // In demo mode, check mock eligibility
+        const { initializeMockData } = await import("@/lib/mock-data");
+        initializeMockData();
+        const mockEligibility = getMockEligibility(currentSessionId);
+        if (!mockEligibility) {
+          console.log("No eligibility check found in demo mode, redirecting to eligibility page");
+          router.push('/eligibility');
+          return;
+        }
+      } else if (!isTestingMode()) {
+        try {
+          const eligibility = await checkEligibilityStatus(currentSessionId);
+          if (!eligibility) {
+            console.log("No eligibility check found, redirecting to eligibility page");
+            router.push('/eligibility');
+            return;
+          }
+        } catch (err) {
+          console.error("Error checking eligibility:", err);
+          // If there's an error, redirect to eligibility page to be safe
+          router.push('/eligibility');
+          return;
+        }
+      }
+      
+      // Load data from database or mock data
       try {
-        console.log("Loading data from database...");
-        
-        // Get countdown timer
-        const timer = await getCountdownTimer();
-        if (timer) {
-          const endTime = new Date(timer.end_time).getTime();
-          const now = new Date().getTime();
-          const timeLeft = Math.max(0, endTime - now);
-          setCountdown(timeLeft);
-          console.log("Countdown timer loaded:", timeLeft);
+        if (isDemoMode()) {
+          console.log("Loading mock data for demo mode...");
+          const { initializeMockData } = await import("@/lib/mock-data");
+          initializeMockData();
+          
+          // Get mock timer
+          const mockTimer = getMockTimer();
+          if (mockTimer) {
+            const endTime = new Date(mockTimer.end_time).getTime();
+            const now = new Date().getTime();
+            const timeLeft = Math.max(0, endTime - now);
+            setCountdown(timeLeft);
+            console.log("Mock countdown timer loaded:", timeLeft);
+          }
+          
+          // Get mock queue
+          const mockQueue = getMockQueue();
+          if (mockQueue) {
+            setQueueStatus(mockQueue);
+            setQueuePosition(mockQueue.queue_position || 1);
+            console.log("Mock queue status loaded:", mockQueue);
+          }
+          
+          setDataLoaded(true);
+          console.log("Mock data loaded successfully");
         } else {
-          console.log("No countdown timer found, using default");
-          setCountdown(3600000); // 1 hour default
+          console.log("Loading data from database...");
+          
+          // Get countdown timer
+          const timer = await getCountdownTimer();
+          if (timer) {
+            const endTime = new Date(timer.end_time).getTime();
+            const now = new Date().getTime();
+            const timeLeft = Math.max(0, endTime - now);
+            setCountdown(timeLeft);
+            console.log("Countdown timer loaded:", timeLeft);
+          } else {
+            console.log("No countdown timer found, using default");
+            setCountdown(3600000); // 1 hour default
+          }
+          
+          // Get queue status
+          const queue = await getQueueStatus();
+          if (queue) {
+            setQueueStatus(queue);
+            setQueuePosition(queue.queue_position || 1);
+            console.log("Queue status loaded:", queue);
+          } else {
+            console.log("No queue status found, using default");
+            setQueuePosition(1);
+          }
+          
+          setDataLoaded(true);
+          console.log("Database data loaded successfully");
         }
-        
-        // Get queue status
-        const queue = await getQueueStatus();
-        if (queue) {
-          setQueueStatus(queue);
-          setQueuePosition(queue.queue_position || 1);
-          console.log("Queue status loaded:", queue);
-        } else {
-          console.log("No queue status found, using default");
-          setQueuePosition(1);
-        }
-        
-        setDataLoaded(true);
-        console.log("Database data loaded successfully");
-        
       } catch (err) {
-        console.error("Error loading database data:", err);
-        // Use defaults if database fails
+        console.error("Error loading data:", err);
+        // Use defaults if loading fails
         setCountdown(3600000);
         setQueuePosition(1);
         setDataLoaded(true);
@@ -94,26 +157,39 @@ export default function WaitingRoomNew() {
       
       console.log("Creating user session for:", sessionId);
       try {
-        // First check if session already exists
-        const existingSession = await getUserSession(sessionId);
-        if (existingSession) {
-          console.log("Found existing user session:", existingSession);
-          setUserSession(existingSession);
-          if (existingSession.queue_position) {
-            setQueuePosition(existingSession.queue_position);
+        if (isDemoMode()) {
+          // Use mock session in demo mode
+          let mockSession = getMockSession(sessionId);
+          if (!mockSession) {
+            mockSession = createMockSession(sessionId);
+          }
+          console.log("Using mock session:", mockSession);
+          setUserSession(mockSession);
+          if (mockSession.queue_position) {
+            setQueuePosition(mockSession.queue_position);
           }
         } else {
-          // Create new session
-          const sessionResult = await createUserSession(sessionId);
-          if (sessionResult.success) {
-            console.log("Created new user session:", sessionResult);
-            const newSession = await getUserSession(sessionId);
-            setUserSession(newSession);
-            if (newSession?.queue_position) {
-              setQueuePosition(newSession.queue_position);
+          // First check if session already exists
+          const existingSession = await getUserSession(sessionId);
+          if (existingSession) {
+            console.log("Found existing user session:", existingSession);
+            setUserSession(existingSession);
+            if (existingSession.queue_position) {
+              setQueuePosition(existingSession.queue_position);
             }
           } else {
-            console.error("Failed to create user session:", sessionResult.error);
+            // Create new session
+            const sessionResult = await createUserSession(sessionId);
+            if (sessionResult.success) {
+              console.log("Created new user session:", sessionResult);
+              const newSession = await getUserSession(sessionId);
+              setUserSession(newSession);
+              if (newSession?.queue_position) {
+                setQueuePosition(newSession.queue_position);
+              }
+            } else {
+              console.error("Failed to create user session:", sessionResult.error);
+            }
           }
         }
       } catch (err) {

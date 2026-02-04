@@ -42,7 +42,18 @@ export async function selectUsersForReferral() {
   return { _mock: true, type: 'select_users' };
 }
 
-export async function submitEligibilityCheck(sessionId: string, eligibilityData: { schoolYear: string; catchmentTown: string; canAttendHospital: boolean }) {
+export async function submitEligibilityCheck(
+  sessionId: string,
+  eligibilityData: {
+    parentName: string;
+    primaryEmail: string;
+    secondaryEmail?: string;
+    diagnosis: string;
+    schoolYear: string;
+    catchmentTown: string;
+    canAttendHospital: boolean;
+  }
+) {
   if (!isDemoMode()) {
     throw new Error("submitEligibilityCheck should not be called in demo mode");
   }

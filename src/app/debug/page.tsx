@@ -116,7 +116,7 @@ export default function DebugPage() {
                 <div className="flex justify-between items-center">
                   <span className="text-black">Spots Available:</span>
                   <span className="text-lg font-semibold text-green-600">
-                    50
+                    40
                   </span>
                 </div>
 

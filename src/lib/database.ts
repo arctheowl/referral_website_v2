@@ -27,7 +27,7 @@ export const createTables = async () => {
   await sql`
     CREATE TABLE IF NOT EXISTS queue_management (
       id SERIAL PRIMARY KEY,
-      max_users INTEGER DEFAULT 50,
+      max_users INTEGER DEFAULT 40,
       current_users INTEGER DEFAULT 0,
       queue_position INTEGER DEFAULT 0,
       is_open BOOLEAN DEFAULT false,
@@ -103,11 +103,16 @@ export const createTables = async () => {
     );
   `;
 
-  // Eligibility check table (pre-screening before waiting room)
+  // Eligibility check table (pre-screening before waiting room).
+  // For existing tables, add: parent_name, primary_email, secondary_email, diagnosis (VARCHAR(255)).
   await sql`
     CREATE TABLE IF NOT EXISTS eligibility_checks (
       id SERIAL PRIMARY KEY,
       session_id VARCHAR(255) UNIQUE NOT NULL,
+      parent_name VARCHAR(255),
+      primary_email VARCHAR(255),
+      secondary_email VARCHAR(255),
+      diagnosis VARCHAR(255),
       school_year VARCHAR(50) NOT NULL,
       catchment_town VARCHAR(255) NOT NULL,
       can_attend_hospital BOOLEAN NOT NULL,
@@ -124,7 +129,7 @@ export const createTables = async () => {
 
   await sql`
     INSERT INTO queue_management (max_users, current_users, queue_position, is_open)
-    VALUES (50, 0, 0, false)
+    VALUES (40, 0, 0, false)
     ON CONFLICT DO NOTHING;
   `;
 };

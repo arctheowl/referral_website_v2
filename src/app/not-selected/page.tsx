@@ -4,9 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { 
   HeartIcon, 
-  BookOpenIcon, 
   PhoneIcon, 
-  GlobeAltIcon, 
   UserGroupIcon,
   AcademicCapIcon,
   ChatBubbleLeftRightIcon,
@@ -173,112 +171,46 @@ function NotSelectedContent() {
               Thank You for Your Interest
             </h1>
             <p className="text-lg text-black max-w-2xl mx-auto">
-              Unfortunately, you were not among the first 50 applicants selected for this round. 
-              However, we have valuable resources and alternative options to support you and your family.
+              Unfortunately you were not among the first 40 applicants randomly selected this round. We hope to open again in the autumn term. Please see other sources of support below.
             </p>
           </div>
 
           {/* Main Content */}
           <div className="grid lg:grid-cols-2 gap-8 mb-8">
-            {/* Waitlist Section */}
+            {/* Newsletter signup */}
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-2xl font-semibold text-black mb-4 flex items-center">
                 <UserGroupIcon className="h-6 w-6 text-blue-600 mr-2" />
-                Join Our Waitlist
+                Sign up for our newsletter mailing list here
               </h2>
-              
+              <p className="text-black mb-4">
+                To stay up to date with our news, events and future opportunities.
+              </p>
               {!waitlistSuccess ? (
                 <>
-                  <p className="text-black mb-4">
-                    Be the first to know about future opportunities and priority access to our services.
-                  </p>
-                  
                   {!showWaitlistForm ? (
-                    <button
-                      onClick={() => setShowWaitlistForm(true)}
-                      className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors"
+                    <a
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); setShowWaitlistForm(true); }}
+                      className="inline-block bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors"
                     >
-                      Join Waitlist
-                    </button>
+                      Sign up for newsletter
+                    </a>
                   ) : (
                     <form onSubmit={handleWaitlistSubmit} className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-black mb-1">
-                          Your Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={waitlistData.name}
-                          onChange={(e) => handleInputChange('name', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        />
+                        <label className="block text-sm font-medium text-black mb-1">Your Name *</label>
+                        <input type="text" required value={waitlistData.name} onChange={(e) => handleInputChange('name', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900" />
                       </div>
-                      
                       <div>
-                        <label className="block text-sm font-medium text-black mb-1">
-                          Email Address *
-                        </label>
-                        <input
-                          type="email"
-                          required
-                          value={waitlistData.email}
-                          onChange={(e) => handleInputChange('email', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        />
+                        <label className="block text-sm font-medium text-black mb-1">Email Address *</label>
+                        <input type="email" required value={waitlistData.email} onChange={(e) => handleInputChange('email', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900" />
                       </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-black mb-1">
-                          Child's Name
-                        </label>
-                        <input
-                          type="text"
-                          value={waitlistData.childName}
-                          onChange={(e) => handleInputChange('childName', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-black mb-1">
-                          Child's Date of Birth
-                        </label>
-                        <input
-                          type="date"
-                          value={waitlistData.childDOB}
-                          onChange={(e) => handleInputChange('childDOB', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-black mb-1">
-                          Postcode
-                        </label>
-                        <input
-                          type="text"
-                          value={waitlistData.postcode}
-                          onChange={(e) => handleInputChange('postcode', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                        />
-                      </div>
-                      
                       <div className="flex space-x-3">
-                        <button
-                          type="submit"
-                          disabled={submitting}
-                          className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50"
-                        >
-                          {submitting ? "Adding..." : "Add to Waitlist"}
+                        <button type="submit" disabled={submitting} className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50">
+                          {submitting ? "Submitting..." : "Sign up"}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => setShowWaitlistForm(false)}
-                          className="px-4 py-2 border border-gray-300 rounded-md text-black hover:bg-gray-50"
-                        >
-                          Cancel
-                        </button>
+                        <button type="button" onClick={() => setShowWaitlistForm(false)} className="px-4 py-2 border border-gray-300 rounded-md text-black hover:bg-gray-50">Cancel</button>
                       </div>
                     </form>
                   )}
@@ -290,187 +222,46 @@ function NotSelectedContent() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <p className="text-green-600 font-medium">Successfully added to waitlist!</p>
-                  <p className="text-sm text-black mt-1">We'll notify you about future opportunities.</p>
+                  <p className="text-green-600 font-medium">Successfully signed up!</p>
+                  <p className="text-sm text-black mt-1">We&apos;ll keep you up to date with our news and future opportunities.</p>
                 </div>
               )}
             </div>
 
-            {/* Alternative Resources */}
+            {/* Other Sources of Support */}
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-2xl font-semibold text-black mb-4 flex items-center">
                 <HeartIcon className="h-6 w-6 text-red-600 mr-2" />
-                Alternative Resources
+                Other Sources of Support
               </h2>
-              
               <div className="space-y-4">
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <h3 className="font-semibold text-blue-900 mb-2 flex items-center">
                     <PhoneIcon className="h-4 w-4 mr-2" />
-                    Local Support Services
+                    Mustard Seed Advice Line
                   </h3>
                   <p className="text-sm text-blue-900">
-                    Contact your local council&apos;s children&apos;s services department for immediate support and guidance.
+                    Please email <a href="mailto:office@mustardseedautism.co.uk" className="text-blue-700 underline">office@mustardseedautism.co.uk</a> for a call with one of our team to discuss any specific issues.
                   </p>
                 </div>
-                
                 <div className="p-4 bg-green-50 rounded-lg">
                   <h3 className="font-semibold text-green-900 mb-2 flex items-center">
                     <AcademicCapIcon className="h-4 w-4 mr-2" />
-                    Educational Support
+                    Branches
                   </h3>
                   <p className="text-sm text-green-900">
-                    Speak with your child&apos;s school SENCO (Special Educational Needs Coordinator) about available support.
+                    Our costed Occupational Therapy Service - please see our website for more information: <a href="https://mustardseedautism.co.uk/branches/" target="_blank" rel="noopener noreferrer" className="text-green-700 underline">https://mustardseedautism.co.uk/branches/</a>
                   </p>
                 </div>
-                
                 <div className="p-4 bg-purple-50 rounded-lg">
                   <h3 className="font-semibold text-purple-900 mb-2 flex items-center">
                     <ChatBubbleLeftRightIcon className="h-4 w-4 mr-2" />
-                    Parent Support Groups
+                    Mustard Seed&apos;s Signposting Document
                   </h3>
                   <p className="text-sm text-purple-900">
-                    Join local parent support groups and online communities for peer support and advice.
+                    Please email <a href="mailto:office@mustardseedautism.co.uk" className="text-purple-700 underline">office@mustardseedautism.co.uk</a> for a copy of our signposting document about other local groups and services.
                   </p>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Resource Links */}
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-2xl font-semibold text-black mb-6 flex items-center">
-              <BookOpenIcon className="h-6 w-6 text-indigo-600 mr-2" />
-              Helpful Resources & Links
-            </h2>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-black mb-2">National Autistic Society</h3>
-                <p className="text-sm text-black mb-3">
-                  Comprehensive information, support, and resources for families affected by autism.
-                </p>
-                <a 
-                  href="https://www.autism.org.uk" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
-                >
-                  <GlobeAltIcon className="h-4 w-4 mr-1" />
-                  Visit Website
-                </a>
-              </div>
-              
-              <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-black mb-2">Contact - For Families</h3>
-                <p className="text-sm text-black mb-3">
-                  Support and information for families with disabled children.
-                </p>
-                <a 
-                  href="https://www.contact.org.uk" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
-                >
-                  <GlobeAltIcon className="h-4 w-4 mr-1" />
-                  Visit Website
-                </a>
-              </div>
-              
-              <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-black mb-2">NHS - Children's Services</h3>
-                <p className="text-sm text-black mb-3">
-                  Information about NHS services and support for children with additional needs.
-                </p>
-                <a 
-                  href="https://www.nhs.uk/conditions/children-and-adolescent-mental-health-services-camhs/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
-                >
-                  <GlobeAltIcon className="h-4 w-4 mr-1" />
-                  Visit Website
-                </a>
-              </div>
-              
-              <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-black mb-2">Local Authority Support</h3>
-                <p className="text-sm text-black mb-3">
-                  Find your local council&apos;s children&apos;s services and support options.
-                </p>
-                <a 
-                  href="https://www.gov.uk/find-local-council" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
-                >
-                  <GlobeAltIcon className="h-4 w-4 mr-1" />
-                  Find Your Council
-                </a>
-              </div>
-              
-              <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-black mb-2">SEND Support</h3>
-                <p className="text-sm text-black mb-3">
-                  Information about Special Educational Needs and Disabilities support.
-                </p>
-                <a 
-                  href="https://www.gov.uk/children-with-special-educational-needs" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
-                >
-                  <GlobeAltIcon className="h-4 w-4 mr-1" />
-                  Learn More
-                </a>
-              </div>
-              
-              <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-black mb-2">Parent Support Groups</h3>
-                <p className="text-sm text-black mb-3">
-                  Connect with other parents facing similar challenges in your area.
-                </p>
-                <a 
-                  href="https://www.facebook.com/groups" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
-                >
-                  <GlobeAltIcon className="h-4 w-4 mr-1" />
-                  Find Groups
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Emergency Support */}
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-red-900 mb-3 flex items-center">
-              <ExclamationTriangleIcon className="h-5 w-5 mr-2" />
-              Need Immediate Support?
-            </h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <h3 className="font-semibold text-red-800 mb-2">Crisis Support</h3>
-                <p className="text-sm text-red-900 mb-2">
-                  If you or your child are in immediate danger or experiencing a mental health crisis:
-                </p>
-                <ul className="text-sm text-red-900 space-y-1">
-                  <li>• Call 999 for emergency services</li>
-                  <li>• Contact your local A&E department</li>
-                  <li>• Call Samaritans: 116 123 (free, 24/7)</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold text-red-800 mb-2">Mental Health Support</h3>
-                <p className="text-sm text-red-900 mb-2">
-                  For mental health support and advice:
-                </p>
-                <ul className="text-sm text-red-900 space-y-1">
-                  <li>• Childline: 0800 1111</li>
-                  <li>• YoungMinds: 0808 802 5544</li>
-                  <li>• Mind: 0300 123 3393</li>
-                </ul>
               </div>
             </div>
           </div>
@@ -478,13 +269,7 @@ function NotSelectedContent() {
           {/* Footer */}
           <div className="text-center mt-8 text-sm text-black">
             <p>
-              Thank you for your interest in our program. We appreciate your patience and understanding.
-            </p>
-            <p className="mt-2">
-              For any questions, please contact us at{" "}
-              <a href="mailto:support@example.com" className="text-blue-600 hover:text-blue-800">
-                support@example.com
-              </a>
+              Thank you for your interest in our services. We appreciate your patience and understanding.
             </p>
           </div>
         </div>

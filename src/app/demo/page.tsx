@@ -45,7 +45,7 @@ const FLOWS: Flow[] = [
       '5. Complete referral form (if selected)'
     ]
   },
-    {
+  {
     id: 'waiting',
     name: 'Waiting in Queue',
     description: 'See the waiting room experience',
@@ -55,40 +55,23 @@ const FLOWS: Flow[] = [
     steps: [
       '1. Already eligible',
       '2. In waiting room',
-      '3. See countdown timer',
-      '4. View queue position'
-    ]
-  },
-  {
-    id: 'selected',
-    name: 'Selected User',
-    description: 'Experience the flow as a selected user who can complete the referral form',
-    status: 'selected',
-    icon: CheckCircleIcon,
-    color: 'green',
-    steps: [
-      '1. Already eligible',
-      '2. In waiting room',
-      '3. Selected for referral',
-      '4. Complete referral form',
-      '5. View submission confirmation'
+      '3. See countdown timer'
     ]
   },
   {
     id: 'rejected',
     name: 'Not Selected',
-    description: 'See what happens when a user is not in the first 50 applicants',
+    description: 'See what happens when a user is not in the first 40 applicants',
     status: 'rejected',
     icon: XCircleIcon,
     color: 'red',
     steps: [
       '1. Already eligible',
       '2. In waiting room',
-      '3. Not selected (not in first 50)',
-      '4. View resources and waitlist options'
+      '3. Not selected (not in first 40)',
+      '4. View resources and newsletter signup'
     ]
   },
-
   {
     id: 'completed',
     name: 'Successfully Submitted',
@@ -138,6 +121,9 @@ export default function DemoPage() {
         eligibility: {
           [sessionId]: {
             session_id: sessionId,
+            parent_name: 'Demo Parent',
+            primary_email: 'demo@example.com',
+            diagnosis: 'diagnosis',
             school_year: 'Year 5',
             catchment_town: 'Odiham',
             can_attend_hospital: true,
@@ -152,9 +138,9 @@ export default function DemoPage() {
             joined_at: new Date().toISOString(),
             ...(flow.status === 'selected' && { selected_at: new Date().toISOString() }),
             ...(flow.status === 'rejected' && { selected_at: null }),
-            ...(flow.status === 'completed' && { 
+            ...(flow.status === 'completed' && {
               selected_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
-              completed_at: new Date().toISOString() 
+              completed_at: new Date().toISOString()
             })
           }
         },
@@ -164,9 +150,9 @@ export default function DemoPage() {
           is_active: true
         },
         queue: {
-          max_users: 50,
+          max_users: 40,
           current_users: flow.status === 'selected' ? 25 : 0,
-          queue_position: flow.status === 'selected' ? 50 : flow.status === 'rejected' ? 55 : 30,
+          queue_position: flow.status === 'selected' ? 40 : flow.status === 'rejected' ? 55 : 30,
           is_open: true
         }
       };
@@ -175,11 +161,9 @@ export default function DemoPage() {
     
     setSelectedFlow(flow.id);
     
-    // Navigate based on flow
+    // Navigate based on flow (Selected User flow removed - use Completed flow to see referral form outcome)
     if (flow.id === 'new-user') {
       router.push('/eligibility');
-    } else if (flow.status === 'selected') {
-      router.push('/referral-form');
     } else if (flow.status === 'rejected') {
       router.push('/not-selected');
     } else if (flow.status === 'completed') {

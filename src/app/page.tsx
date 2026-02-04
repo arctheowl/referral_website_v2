@@ -396,13 +396,6 @@ export default function WaitingRoomNew() {
               
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-black">Your Position:</span>
-                  <span className="text-2xl font-bold text-indigo-600">
-                    #{queuePosition}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center">
                   <span className="text-black">Total in Queue:</span>
                   <span className="text-lg font-semibold text-black">
                     {queueStatus?.queue_position || queuePosition}
@@ -412,7 +405,7 @@ export default function WaitingRoomNew() {
                 <div className="flex justify-between items-center">
                   <span className="text-black">Spots Available:</span>
                   <span className="text-lg font-semibold text-green-600">
-                    50
+                    40
                   </span>
                 </div>
 

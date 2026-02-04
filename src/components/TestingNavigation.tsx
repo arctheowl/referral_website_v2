@@ -56,7 +56,7 @@ export default function TestingNavigation({ currentPage = "" }: TestingNavigatio
       name: "Not Selected",
       path: "/not-selected",
       icon: XCircleIcon,
-      description: "Page for users not in first 50"
+      description: "Page for users not in first 40"
     },
     {
       name: "Submitted",

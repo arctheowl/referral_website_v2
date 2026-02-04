@@ -4,6 +4,10 @@ const STORAGE_KEY = 'demo_referral_data';
 
 export interface MockEligibility {
   session_id: string;
+  parent_name: string;
+  primary_email: string;
+  secondary_email?: string;
+  diagnosis: string;
   school_year: string;
   catchment_town: string;
   can_attend_hospital: boolean;
@@ -92,7 +96,7 @@ export function initializeMockData() {
   
   if (!data.queue) {
     data.queue = {
-      max_users: 50,
+      max_users: 40,
       current_users: 0,
       queue_position: 0,
       is_open: true

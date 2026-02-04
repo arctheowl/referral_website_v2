@@ -126,7 +126,7 @@ export async function selectUsersForReferral() {
       return { success: false, error: "Queue status not found" };
     }
 
-    // Select the first 50 users in the queue
+    // Select the first 40 users in the queue (max_users from queue_management)
     const selectedUsers = await sql`
       UPDATE user_sessions 
       SET status = 'selected', selected_at = CURRENT_TIMESTAMP
@@ -341,25 +341,36 @@ export async function checkFormSubmissionStatus(sessionId: string) {
 }
 
 // Eligibility check actions
-export async function submitEligibilityCheck(sessionId: string, eligibilityData: { schoolYear: string; catchmentTown: string; canAttendHospital: boolean }) {
+export async function submitEligibilityCheck(
+  sessionId: string,
+  eligibilityData: {
+    parentName: string;
+    primaryEmail: string;
+    secondaryEmail?: string;
+    diagnosis: string;
+    schoolYear: string;
+    catchmentTown: string;
+    canAttendHospital: boolean;
+  }
+) {
   try {
     const sql = getSql();
-    
+
     // Check if eligibility already exists
     const existing = await sql`
       SELECT id FROM eligibility_checks WHERE session_id = ${sessionId};
     `;
-    
+
     if (existing.length > 0) {
       return { success: true, alreadySubmitted: true };
     }
-    
+
     // Insert eligibility check
     await sql`
-      INSERT INTO eligibility_checks (session_id, school_year, catchment_town, can_attend_hospital)
-      VALUES (${sessionId}, ${eligibilityData.schoolYear}, ${eligibilityData.catchmentTown}, ${eligibilityData.canAttendHospital});
+      INSERT INTO eligibility_checks (session_id, parent_name, primary_email, secondary_email, diagnosis, school_year, catchment_town, can_attend_hospital)
+      VALUES (${sessionId}, ${eligibilityData.parentName}, ${eligibilityData.primaryEmail}, ${eligibilityData.secondaryEmail ?? null}, ${eligibilityData.diagnosis}, ${eligibilityData.schoolYear}, ${eligibilityData.catchmentTown}, ${eligibilityData.canAttendHospital});
     `;
-    
+
     return { success: true, alreadySubmitted: false };
   } catch (error) {
     console.error("Error submitting eligibility check:", error);

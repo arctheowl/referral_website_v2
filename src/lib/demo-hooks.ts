@@ -38,10 +38,26 @@ export function useDemoEligibility(sessionId: string) {
     setLoading(false);
   }, [sessionId]);
 
-  const submitEligibility = async (data: { schoolYear: string; catchmentTown: string; canAttendHospital: boolean }) => {
+  const submitEligibility = async (data: {
+    parentName: string;
+    primaryEmail: string;
+    secondaryEmail?: string;
+    diagnosis: string;
+    schoolYear: string;
+    catchmentTown: string;
+    canAttendHospital: boolean;
+  }) => {
     if (!isDemoMode() || !sessionId) return { success: false, error: "Invalid session" };
-    
-    saveMockEligibility(sessionId, data);
+
+    saveMockEligibility(sessionId, {
+      parent_name: data.parentName,
+      primary_email: data.primaryEmail,
+      secondary_email: data.secondaryEmail,
+      diagnosis: data.diagnosis,
+      school_year: data.schoolYear,
+      catchment_town: data.catchmentTown,
+      can_attend_hospital: data.canAttendHospital
+    });
     setEligibility(getMockEligibility(sessionId));
     return { success: true };
   };

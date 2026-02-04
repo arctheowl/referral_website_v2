@@ -2,34 +2,55 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircleIcon, XCircleIcon, AcademicCapIcon, MapPinIcon, BuildingOfficeIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon, XCircleIcon, AcademicCapIcon, MapPinIcon, BuildingOfficeIcon, UserIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { submitEligibilityCheck, checkEligibilityStatus } from "../actions";
 import TestingNavigation from "@/components/TestingNavigation";
 import { isTestingMode, isDemoMode } from "@/lib/config";
 import { useDemoEligibility } from "@/lib/demo-hooks";
 
 interface EligibilityData {
+  parentName: string;
+  primaryEmail: string;
+  secondaryEmail: string;
+  diagnosis: string;
   schoolYear: string;
   catchmentTown: string;
   canAttendHospital: boolean;
 }
 
-// Catchment towns - update this list as needed
+// Catchment towns
 const CATCHMENT_TOWNS = [
+  "Aldershot",
+  "Farnborough",
+  "Fleet",
+  "Church Crookham",
+  "Yateley",
+  "Hartley Wintney",
   "Odiham",
   "Hook",
-  "Basingstoke",
-  "Farnborough",
-  "Aldershot",
-  "Fleet",
-  "Yateley",
+  "Farnham",
+  "Badshot Lea",
+  "Ash",
+  "Ash Vale",
+  "Bagshot",
+  "Blackwater",
   "Camberley",
-  "Hartley Wintney",
-  "Winchfield",
-  "Other (Please contact us)"
+  "Frimley",
+  "Frimley Green",
+  "Mytchett",
+  "Tongham",
+  "Lightwater",
+  "Pirbright",
+  "Bisley"
 ];
 
-// School years
+// Diagnosis options
+const DIAGNOSIS_OPTIONS = [
+  { value: "diagnosis", label: "Child has autism diagnosis" },
+  { value: "referred", label: "Child has been referred and is in process of obtaining autism diagnosis" }
+];
+
+// School years - Reception to Year 6 only
 const SCHOOL_YEARS = [
   "Reception",
   "Year 1",
@@ -37,14 +58,7 @@ const SCHOOL_YEARS = [
   "Year 3",
   "Year 4",
   "Year 5",
-  "Year 6",
-  "Year 7",
-  "Year 8",
-  "Year 9",
-  "Year 10",
-  "Year 11",
-  "Year 12",
-  "Year 13"
+  "Year 6"
 ];
 
 export default function EligibilityPage() {
@@ -54,6 +68,10 @@ export default function EligibilityPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
   const [eligibilityData, setEligibilityData] = useState<EligibilityData>({
+    parentName: "",
+    primaryEmail: "",
+    secondaryEmail: "",
+    diagnosis: "",
     schoolYear: "",
     catchmentTown: "",
     canAttendHospital: false
@@ -113,6 +131,24 @@ export default function EligibilityPage() {
     setError("");
 
     // Validation
+    if (!eligibilityData.parentName) {
+      setError("Please enter parent name");
+      setSubmitting(false);
+      return;
+    }
+
+    if (!eligibilityData.primaryEmail) {
+      setError("Please enter primary email");
+      setSubmitting(false);
+      return;
+    }
+
+    if (!eligibilityData.diagnosis) {
+      setError("Please select diagnosis status");
+      setSubmitting(false);
+      return;
+    }
+
     if (!eligibilityData.schoolYear) {
       setError("Please select your child's school year");
       setSubmitting(false);
@@ -135,9 +171,25 @@ export default function EligibilityPage() {
       let result;
       if (isDemoMode()) {
         // Use mock data in demo mode
-        result = await submitDemoEligibility(eligibilityData);
+        result = await submitDemoEligibility({
+          parentName: eligibilityData.parentName,
+          primaryEmail: eligibilityData.primaryEmail,
+          secondaryEmail: eligibilityData.secondaryEmail || undefined,
+          diagnosis: eligibilityData.diagnosis,
+          schoolYear: eligibilityData.schoolYear,
+          catchmentTown: eligibilityData.catchmentTown,
+          canAttendHospital: eligibilityData.canAttendHospital
+        });
       } else {
-        result = await submitEligibilityCheck(sessionId, eligibilityData);
+        result = await submitEligibilityCheck(sessionId, {
+          parentName: eligibilityData.parentName,
+          primaryEmail: eligibilityData.primaryEmail,
+          secondaryEmail: eligibilityData.secondaryEmail || undefined,
+          diagnosis: eligibilityData.diagnosis,
+          schoolYear: eligibilityData.schoolYear,
+          catchmentTown: eligibilityData.catchmentTown,
+          canAttendHospital: eligibilityData.canAttendHospital
+        });
       }
       
       if (result.success) {
@@ -192,6 +244,74 @@ export default function EligibilityPage() {
             )}
 
             <div className="space-y-6">
+              {/* Parent Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center">
+                  <UserIcon className="h-5 w-5 mr-2 text-purple-600" />
+                  Parent Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={eligibilityData.parentName}
+                  onChange={(e) => handleInputChange('parentName', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 bg-white"
+                  placeholder="Your name"
+                />
+              </div>
+
+              {/* Primary Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center">
+                  <EnvelopeIcon className="h-5 w-5 mr-2 text-purple-600" />
+                  Primary Email *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={eligibilityData.primaryEmail}
+                  onChange={(e) => handleInputChange('primaryEmail', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 bg-white"
+                  placeholder="your@email.com"
+                />
+              </div>
+
+              {/* Secondary Email (optional) */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center">
+                  <EnvelopeIcon className="h-5 w-5 mr-2 text-purple-600" />
+                  Secondary Email <span className="text-gray-500 font-normal">(optional)</span>
+                </label>
+                <input
+                  type="email"
+                  value={eligibilityData.secondaryEmail}
+                  onChange={(e) => handleInputChange('secondaryEmail', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 bg-white"
+                  placeholder="Second contact email (e.g. other parent)"
+                />
+              </div>
+
+              {/* Diagnosis */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center">
+                  <AcademicCapIcon className="h-5 w-5 mr-2 text-purple-600" />
+                  Diagnosis *
+                </label>
+                <select
+                  required
+                  value={eligibilityData.diagnosis}
+                  onChange={(e) => handleInputChange('diagnosis', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 bg-white"
+                >
+                  <option value="">Please select...</option>
+                  {DIAGNOSIS_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* School Year */}
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center">
@@ -232,9 +352,6 @@ export default function EligibilityPage() {
                     </option>
                   ))}
                 </select>
-                <p className="mt-2 text-sm text-gray-600">
-                  If your town is not listed, please select "Other" and contact us for further information.
-                </p>
               </div>
 
               {/* Hospital Confirmation */}
@@ -280,7 +397,7 @@ export default function EligibilityPage() {
                 <CheckCircleIcon className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5" />
                 <div className="text-sm text-blue-900">
                   <p className="font-medium mb-1">What happens next?</p>
-                  <p>Once you submit this form, you'll be taken to the waiting room where you'll join the queue for the referral program. Only the first 50 applicants will be selected to complete the full referral form.</p>
+                  <p>Once you submit this form, you'll be taken to the waiting room where you'll join the queue for the referral program. Only the first 40 applicants will be selected to complete the full referral form.</p>
                 </div>
               </div>
             </div>

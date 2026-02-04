@@ -272,7 +272,7 @@ export default function AdminDashboard() {
                       className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 flex items-center justify-center"
                     >
                       <UserGroupIcon className="h-4 w-4 mr-2" />
-                      Select 50 Users
+                      Select 40 Users
                     </button>
                   </div>
                 </div>

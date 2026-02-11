@@ -84,15 +84,14 @@ function saveMockData(data: MockData) {
 export function initializeMockData() {
   const data = getMockData();
   
-  if (!data.timer) {
-    const now = new Date();
-    const endTime = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
-    data.timer = {
-      start_time: now.toISOString(),
-      end_time: endTime.toISOString(),
-      is_active: true
-    };
-  }
+  // Always use a 20-second countdown in demo (matches waiting room default)
+  const now = new Date();
+  const endTime = new Date(now.getTime() + 20 * 1000);
+  data.timer = {
+    start_time: now.toISOString(),
+    end_time: endTime.toISOString(),
+    is_active: true
+  };
   
   if (!data.queue) {
     data.queue = {

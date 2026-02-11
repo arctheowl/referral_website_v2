@@ -162,8 +162,17 @@ function NotSelectedContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100">
       <TestingNavigation currentPage="/not-selected" />
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
+      <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
+        {/* Logo - same position as eligibility page */}
+        <div className="flex flex-col items-center justify-center lg:col-span-1 min-h-[200px] lg:min-h-[80vh]">
+          <img
+            src="/MustardSeed_Primary-Logo.png"
+            alt="Mustard Seed"
+            className="w-full h-full object-contain"
+          />
+        </div>
+        <div className="lg:col-span-2 lg:col-start-2">
+          <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
             <ExclamationTriangleIcon className="h-16 w-16 text-orange-500 mx-auto mb-4" />
@@ -171,7 +180,7 @@ function NotSelectedContent() {
               Thank You for Your Interest
             </h1>
             <p className="text-lg text-black max-w-2xl mx-auto">
-              Unfortunately you were not among the first 40 applicants randomly selected this round. We hope to open again in the autumn term. Please see other sources of support below.
+              Unfortunately you were not among the 40 applicants randomly selected this round. We hope to open again in the autumn term. Please see other sources of support below.
             </p>
           </div>
 
@@ -271,6 +280,7 @@ function NotSelectedContent() {
             <p>
               Thank you for your interest in our services. We appreciate your patience and understanding.
             </p>
+          </div>
           </div>
         </div>
       </div>

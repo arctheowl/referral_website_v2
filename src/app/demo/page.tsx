@@ -13,7 +13,7 @@ import {
   DocumentTextIcon,
   DocumentCheckIcon
 } from "@heroicons/react/24/outline";
-import { clearMockData, initializeMockData } from "@/lib/mock-data";
+import { clearMockData, initializeMockData, getMockEligibility } from "@/lib/mock-data";
 import TestingNavigation from "@/components/TestingNavigation";
 import { isDemoMode } from "@/lib/config";
 
@@ -41,8 +41,7 @@ const FLOWS: Flow[] = [
       '1. Complete eligibility form',
       '2. Join waiting room',
       '3. Wait for selection',
-      '4. Get selected or rejected',
-      '5. Complete referral form (if selected)'
+      '4. Get selected or rejected'
     ]
   },
   {
@@ -75,16 +74,14 @@ const FLOWS: Flow[] = [
   {
     id: 'completed',
     name: 'Successfully Submitted',
-    description: 'View the confirmation page after successfully submitting the referral form',
+    description: 'View the confirmation page (legacy flow)',
     status: 'completed',
     icon: DocumentCheckIcon,
     color: 'green',
     steps: [
       '1. Already eligible',
-      '2. Selected for referral',
-      '3. Completed referral form',
-      '4. View submission confirmation',
-      '5. See next steps information'
+      '2. Selected',
+      '3. View submission confirmation'
     ]
   }
 ];
@@ -95,19 +92,26 @@ export default function DemoPage() {
   const [selectedFlow, setSelectedFlow] = useState<string | null>(null);
 
   useEffect(() => {
-    // Only initialize if in demo mode
-    if (isDemoMode()) {
-      initializeMockData();
-    }
-    
-    // Get or create session ID
+    // Get or create session ID first (needed for eligibility check)
     let existingSessionId = localStorage.getItem('referral_session_id');
     if (!existingSessionId) {
       existingSessionId = `demo_session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       localStorage.setItem('referral_session_id', existingSessionId);
     }
     setSessionId(existingSessionId);
-  }, []);
+
+    // Only initialize if in demo mode
+    if (isDemoMode()) {
+      initializeMockData();
+      // On initial page load in demo mode: send users to eligibility first so they
+      // go through eligibility → waiting room → chosen or not-selected
+      const hasEligibility = getMockEligibility(existingSessionId);
+      if (!hasEligibility) {
+        router.push('/eligibility');
+        return;
+      }
+    }
+  }, [router]);
 
   const handleStartFlow = (flow: Flow) => {
     // Clear existing data

@@ -12,29 +12,37 @@ export const createTables = async () => {
   const sql = getSql();
   
   // Countdown timer table
+  // selection_status: set when selection runs (e.g. 'completed'); null/blank before.
+  // selected_at: when selection was run for this countdown.
   await sql`
     CREATE TABLE IF NOT EXISTS countdown_timer (
       id SERIAL PRIMARY KEY,
       start_time TIMESTAMP NOT NULL,
       end_time TIMESTAMP NOT NULL,
       is_active BOOLEAN DEFAULT true,
+      selection_status VARCHAR(50),
+      selected_at TIMESTAMP,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+  await sql`ALTER TABLE countdown_timer ADD COLUMN IF NOT EXISTS selection_status VARCHAR(50);`;
+  await sql`ALTER TABLE countdown_timer ADD COLUMN IF NOT EXISTS selected_at TIMESTAMP;`;
 
   // Queue management table
   await sql`
     CREATE TABLE IF NOT EXISTS queue_management (
       id SERIAL PRIMARY KEY,
-      max_users INTEGER DEFAULT 40,
+      max_users INTEGER DEFAULT 4,
       current_users INTEGER DEFAULT 0,
       queue_position INTEGER DEFAULT 0,
       is_open BOOLEAN DEFAULT false,
+      selection_completed_at TIMESTAMP,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+  await sql`ALTER TABLE queue_management ADD COLUMN IF NOT EXISTS selection_completed_at TIMESTAMP;`;
 
   // User sessions table
   await sql`
@@ -104,7 +112,7 @@ export const createTables = async () => {
   `;
 
   // Eligibility check table (pre-screening before waiting room).
-  // For existing tables, add: parent_name, primary_email, secondary_email, diagnosis (VARCHAR(255)).
+  // selection_status: NULL until countdown ends, then 'selected' or 'rejected'.
   await sql`
     CREATE TABLE IF NOT EXISTS eligibility_checks (
       id SERIAL PRIMARY KEY,
@@ -116,9 +124,11 @@ export const createTables = async () => {
       school_year VARCHAR(50) NOT NULL,
       catchment_town VARCHAR(255) NOT NULL,
       can_attend_hospital BOOLEAN NOT NULL,
+      selection_status VARCHAR(50),
       submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+  await sql`ALTER TABLE eligibility_checks ADD COLUMN IF NOT EXISTS selection_status VARCHAR(50);`;
 
   // Initialize default values
   await sql`
@@ -129,7 +139,7 @@ export const createTables = async () => {
 
   await sql`
     INSERT INTO queue_management (max_users, current_users, queue_position, is_open)
-    VALUES (40, 0, 0, false)
+    VALUES (4, 0, 0, false)
     ON CONFLICT DO NOTHING;
   `;
 };

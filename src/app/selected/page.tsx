@@ -9,7 +9,16 @@ export default function Submitted() {
     <FlowEnforcement requiredStatus="completed">
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
         <TestingNavigation currentPage="/submitted" />
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
+          {/* Logo - same position as eligibility page */}
+          <div className="flex flex-col items-center justify-center lg:col-span-1 min-h-[200px] lg:min-h-[80vh]">
+            <img
+              src="/MustardSeed_Primary-Logo.png"
+              alt="Mustard Seed"
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <div className="lg:col-span-2 lg:col-start-2">
         <div className="max-w-2xl mx-auto text-center">
           {/* Success */}
           <div className="mb-8">
@@ -50,6 +59,7 @@ export default function Submitted() {
             </ul>
           </div>
         </div>
+          </div>
         </div>
       </div>
     </FlowEnforcement>

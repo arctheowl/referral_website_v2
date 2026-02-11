@@ -3,18 +3,18 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClockIcon, UsersIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import { getCountdownTimer, getQueueStatus, createUserSession, getUserSession, selectUsersForReferral, checkEligibilityStatus } from "./actions";
+import { getQueueStatus, createUserSession, getUserSession, checkEligibilityStatus } from "./actions";
 import TestingNavigation from "@/components/TestingNavigation";
 import { shouldShowDebugInfo, isTestingMode, isDemoMode } from "@/lib/config";
 import { useDemoSession, useDemoTimer, useDemoQueue } from "@/lib/demo-hooks";
-import { getMockEligibility, getMockSession, getMockTimer, getMockQueue, createMockSession } from "@/lib/mock-data";
+import { getMockEligibility, getMockSession, getMockTimer, getMockQueue, createMockSession, runMockRandomSelection } from "@/lib/mock-data";
 
 export default function WaitingRoomNew() {
   const router = useRouter();
   const [sessionId, setSessionId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
-  const [countdown, setCountdown] = useState<number>(0);
+  const [countdown, setCountdown] = useState<number>(20 * 1000); // 20s default; avoid 0 so we don't trigger redirect before load
   const [queuePosition, setQueuePosition] = useState<number>(0);
   const [isResumingSession, setIsResumingSession] = useState(false);
   const [userSession, setUserSession] = useState<any>(null);
@@ -106,20 +106,12 @@ export default function WaitingRoomNew() {
           setDataLoaded(true);
           console.log("Mock data loaded successfully");
         } else {
-          console.log("Loading data from database...");
+          console.log("Loading data (countdown from default, no DB)...");
           
-          // Get countdown timer
-          const timer = await getCountdownTimer();
-          if (timer) {
-            const endTime = new Date(timer.end_time).getTime();
-            const now = new Date().getTime();
-            const timeLeft = Math.max(0, endTime - now);
-            setCountdown(timeLeft);
-            console.log("Countdown timer loaded:", timeLeft);
-          } else {
-            console.log("No countdown timer found, using default");
-            setCountdown(3600000); // 1 hour default
-          }
+          // 20 second countdown by default; redirect only when this local countdown hits 0 (no DB)
+          const DEFAULT_COUNTDOWN_MS = 20 * 1000;
+          setCountdown(DEFAULT_COUNTDOWN_MS);
+          console.log("Using default 20s countdown");
           
           // Get queue status
           const queue = await getQueueStatus();
@@ -137,8 +129,7 @@ export default function WaitingRoomNew() {
         }
       } catch (err) {
         console.error("Error loading data:", err);
-        // Use defaults if loading fails
-        setCountdown(3600000);
+        setCountdown(0);
         setQueuePosition(1);
         setDataLoaded(true);
       }
@@ -225,43 +216,39 @@ export default function WaitingRoomNew() {
     return () => clearInterval(timer);
   }, [countdown, countdownCompleted]);
 
-  // Handle user selection when countdown completes
+  // Handle redirect when countdown completes (for now: random client-side redirect, no DB selection)
   useEffect(() => {
-    const handleUserSelection = async () => {
-      if (!countdownCompleted || userSelectionTriggered || !userSession) return;
-      
-      console.log("Triggering user selection...");
-      setUserSelectionTriggered(true);
-      
-      try {
-        await selectUsersForReferral();
-        console.log("User selection completed");
-      } catch (error) {
-        console.error("Error during user selection:", error);
-      }
-    };
-    
-    handleUserSelection();
-  }, [countdownCompleted, userSelectionTriggered, userSession]);
+    if (!countdownCompleted || userSelectionTriggered || !userSession) return;
 
-  // Handle redirects based on user status
-  useEffect(() => {
-    if (!userSession || !countdownCompleted) return;
-    
-    // Skip automatic redirects in testing/development mode
-    if (process.env.NEXT_PUBLIC_TESTING_MODE === 'true' || 
-        process.env.NODE_ENV === 'development' ||
-        process.env.NEXT_PUBLIC_MOCK_MODE === 'true') {
-      console.log("Testing/Development mode: Skipping automatic redirects");
+    console.log("Countdown completed - redirecting user");
+    setUserSelectionTriggered(true);
+
+    if (isDemoMode()) {
+      // Demo mode: run mock selection then redirect via status (existing flow)
+      const queue = getMockQueue();
+      const maxUsers = queue?.max_users ?? 40;
+      runMockRandomSelection(maxUsers);
+      const updated = getMockSession(sessionId);
+      if (updated) setUserSession(updated);
+      console.log("Demo selection completed:", updated?.status);
       return;
     }
-    
+
+    // For now: random redirect only (no DB selection)
+    const goToSelected = Math.random() < 0.5;
+    router.push(goToSelected ? "/selected" : "/not-selected");
+  }, [countdownCompleted, userSelectionTriggered, userSession, sessionId, router]);
+
+  // Handle redirects based on user status (selected → /selected, rejected → /not-selected, etc.)
+  useEffect(() => {
+    if (!userSession || !countdownCompleted) return;
+
     console.log("Checking user status for redirect:", userSession.status);
     
     switch (userSession.status) {
       case 'selected':
-        console.log("User selected - redirecting to referral form");
-        router.push('/referral-form');
+        console.log("User selected - redirecting to selected page");
+        router.push('/selected');
         break;
       case 'rejected':
         console.log("User rejected - redirecting to not selected page");
@@ -276,25 +263,32 @@ export default function WaitingRoomNew() {
     }
   }, [userSession, countdownCompleted, router]);
 
-  // Poll for status updates after countdown completes
+  // Poll for status updates after countdown completes (immediate refetch + then every 2s)
   useEffect(() => {
     if (!countdownCompleted || !userSession || userSession.status !== 'waiting') return;
     
     console.log("Starting status polling after countdown completion");
     
-    const pollInterval = setInterval(async () => {
+    let cancelled = false;
+    const refetch = async () => {
       try {
         const updatedSession = await getUserSession(sessionId);
+        if (cancelled) return;
         if (updatedSession && updatedSession.status !== userSession.status) {
           console.log("Status update detected:", updatedSession.status);
           setUserSession(updatedSession);
         }
       } catch (error) {
-        console.error("Error polling user session:", error);
+        if (!cancelled) console.error("Error polling user session:", error);
       }
-    }, 2000); // Poll every 2 seconds
+    };
+
+    // Refetch once immediately so we pick up selection result without waiting
+    refetch();
+    const pollInterval = setInterval(refetch, 2000);
     
     return () => {
+      cancelled = true;
       console.log("Stopping status polling");
       clearInterval(pollInterval);
     };
@@ -350,8 +344,10 @@ export default function WaitingRoomNew() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <TestingNavigation currentPage="/" />
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
+      <div className="container mx-auto px-4 py-8 grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 items-start">
+       
+        <div className="lg:col-span-4 mx-auto">
+          <div className="max-w-4xl">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-black mb-4">
@@ -364,7 +360,7 @@ export default function WaitingRoomNew() {
           </div>
 
           {/* Main Content */}
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-1 gap-8">
             {/* Countdown Timer */}
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="flex items-center mb-4">
@@ -424,6 +420,14 @@ export default function WaitingRoomNew() {
                 </div>
               </div>
             </div>
+             {/* Logo - same position as eligibility page */}
+        <div className="flex flex-col items-center justify-center col-span-2 w-1/2 mx-auto">
+          <img
+            src="/MustardSeed_Primary-Logo.png"
+            alt="Mustard Seed"
+            className="w-full h-full object-contain"
+          />
+        </div>
           </div>
 
           {/* Session Info */}
@@ -463,7 +467,8 @@ export default function WaitingRoomNew() {
 
           {/* Footer */}
           <div className="mt-8 text-center text-sm text-black">
-            <p>Referral Program V2</p>
+           
+          </div>
           </div>
         </div>
       </div>

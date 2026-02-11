@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { CheckCircleIcon, XCircleIcon, AcademicCapIcon, MapPinIcon, BuildingOfficeIcon, UserIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { submitEligibilityCheck, checkEligibilityStatus } from "../actions";
 import TestingNavigation from "@/components/TestingNavigation";
@@ -220,20 +221,20 @@ export default function EligibilityPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100">
       <TestingNavigation currentPage="/eligibility" />
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Eligibility Check
-            </h1>
-            <p className="text-lg text-gray-900">
-              Before joining the waiting room, please confirm your eligibility for our referral program.
-            </p>
+      <div className="container mx-auto px-4 py-8 grid grid-cols-3 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
+          {/* Logo */}
+          <div className="flex flex-col items-center justify-center col-span-1 min-h-[80vh]">
+              <img
+                src="/MustardSeed_Primary-Logo.png"
+                alt="Mustard Seed"
+                className="w-full h-full object-contain lg:h-full self-center lg:self-center"
+              />
           </div>
+          {/* Header + Form */}
+          <div className="flex flex-col items-center justify-center col-span-3 col-start-2 lg:col-span-4 lg:col-start-2" >
+        
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-8">
+            <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-8">
             {error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
                 <div className="flex items-center">
@@ -244,6 +245,14 @@ export default function EligibilityPage() {
             )}
 
             <div className="space-y-6">
+                  <div className="mb-8">
+              <h1 className="text-2xl font-bold text-gray-900">
+                Eligibility Check
+              </h1>
+              <p className="text-lg text-gray-900">
+                Before joining the waiting room, please confirm your eligibility for our referral program.
+              </p>
+            </div>
               {/* Parent Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center">
@@ -397,12 +406,12 @@ export default function EligibilityPage() {
                 <CheckCircleIcon className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5" />
                 <div className="text-sm text-blue-900">
                   <p className="font-medium mb-1">What happens next?</p>
-                  <p>Once you submit this form, you'll be taken to the waiting room where you'll join the queue for the referral program. Only the first 40 applicants will be selected to complete the full referral form.</p>
+                  <p>Once you submit this form, you'll be taken to the waiting room where you'll join the queue for the referral program.</p>
                 </div>
               </div>
             </div>
           </form>
-        </div>
+          </div>
       </div>
     </div>
   );

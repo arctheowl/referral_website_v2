@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { 
   HomeIcon, 
-  DocumentTextIcon, 
   XCircleIcon, 
   CheckCircleIcon,
   CogIcon,
@@ -47,10 +46,10 @@ export default function TestingNavigation({ currentPage = "" }: TestingNavigatio
       description: "Main waiting room with countdown timer"
     },
     {
-      name: "Referral Form",
-      path: "/referral-form",
-      icon: DocumentTextIcon,
-      description: "Application form for selected users"
+      name: "Selected",
+      path: "/selected",
+      icon: CheckCircleIcon,
+      description: "Page for selected users (after countdown)"
     },
     {
       name: "Not Selected",

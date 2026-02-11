@@ -20,7 +20,9 @@ export async function updateCountdownTimer(startTime: string, endTime: string) {
     const sql = getSql();
     await sql`
       UPDATE countdown_timer 
-      SET start_time = ${startTime}, end_time = ${endTime}, updated_at = CURRENT_TIMESTAMP 
+      SET start_time = ${startTime}, end_time = ${endTime},
+          selection_status = NULL, selected_at = NULL,
+          updated_at = CURRENT_TIMESTAMP 
       WHERE is_active = true;
     `;
     return { success: true };
@@ -35,7 +37,14 @@ export async function getQueueStatus() {
   try {
     const sql = getSql();
     const data = await sql`SELECT * FROM queue_management ORDER BY updated_at DESC LIMIT 1;`;
-    return data[0] || null;
+    if (data.length) return data[0];
+    // No row exists (e.g. init not run or table empty): create default so the app can run
+    const inserted = await sql`
+      INSERT INTO queue_management (max_users, current_users, queue_position, is_open)
+      VALUES (40, 0, 0, true)
+      RETURNING *;
+    `;
+    return inserted[0] || null;
   } catch (error) {
     console.error("Error fetching queue status:", error);
     return null;
@@ -121,32 +130,76 @@ export async function getUserSession(sessionId: string) {
 export async function selectUsersForReferral() {
   try {
     const sql = getSql();
+    const timer = await getCountdownTimer();
+    if (!timer) {
+      return { success: false, error: "Countdown timer not found" };
+    }
+
+    // If selection was already run for this countdown, do nothing (only one run per countdown)
+    if (timer.selection_status) {
+      return { success: true, selectedCount: 0, alreadyRun: true };
+    }
+
+    // Atomic claim on countdown_timer: only one caller can set selection_status/selected_at; others get 0 rows
+    const claimed = await sql`
+      UPDATE countdown_timer
+      SET selection_status = 'completed', selected_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${timer.id} AND (selection_status IS NULL OR selection_status = '')
+      RETURNING id;
+    `;
+    if (claimed.length === 0) {
+      return { success: true, selectedCount: 0, alreadyRun: true };
+    }
+
     const queueStatus = await getQueueStatus();
     if (!queueStatus) {
       return { success: false, error: "Queue status not found" };
     }
+    const maxUsers = queueStatus.max_users ?? 4;
 
-    // Select the first 40 users in the queue (max_users from queue_management)
+    // Randomly select up to max_users from everyone in the waiting room (not first-come-first-served)
     const selectedUsers = await sql`
-      UPDATE user_sessions 
+      WITH chosen AS (
+        SELECT session_id
+        FROM user_sessions
+        WHERE status = 'waiting'
+        ORDER BY random()
+        LIMIT ${maxUsers}
+      )
+      UPDATE user_sessions us
       SET status = 'selected', selected_at = CURRENT_TIMESTAMP
-      WHERE status = 'waiting' 
-      AND queue_position <= ${queueStatus.max_users}
-      RETURNING session_id, queue_position;
+      FROM chosen c
+      WHERE us.session_id = c.session_id
+      RETURNING us.session_id, us.queue_position;
     `;
 
-    // Mark remaining users as rejected
+    // Mark all remaining waiting users as rejected
     await sql`
-      UPDATE user_sessions 
+      UPDATE user_sessions
       SET status = 'rejected'
-      WHERE status = 'waiting' 
-      AND queue_position > ${queueStatus.max_users};
+      WHERE status = 'waiting';
     `;
 
-    // Update queue management
+    // Update eligibility_checks with selection outcome (null/blank → 'selected' or 'rejected')
+    // Use explicit subqueries so every user_session with selected/rejected gets their eligibility row updated
     await sql`
-      UPDATE queue_management 
-      SET current_users = ${selectedUsers.length}, is_open = false, updated_at = CURRENT_TIMESTAMP;
+      UPDATE eligibility_checks
+      SET selection_status = 'selected'
+      WHERE session_id IN (SELECT session_id FROM user_sessions WHERE status = 'selected')
+        AND (selection_status IS NULL OR selection_status = '');
+    `;
+    await sql`
+      UPDATE eligibility_checks
+      SET selection_status = 'rejected'
+      WHERE session_id IN (SELECT session_id FROM user_sessions WHERE status = 'rejected')
+        AND (selection_status IS NULL OR selection_status = '');
+    `;
+
+    // Update queue management counts (still used for max_users and display)
+    await sql`
+      UPDATE queue_management
+      SET current_users = ${selectedUsers.length}, is_open = false, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${queueStatus.id};
     `;
 
     return { success: true, selectedCount: selectedUsers.length };

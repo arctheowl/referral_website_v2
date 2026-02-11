@@ -167,6 +167,31 @@ export function updateMockSessionStatus(sessionId: string, status: MockUserSessi
   }
 }
 
+/** Fisher-Yates shuffle (mutates array) */
+function shuffle<T>(arr: T[]): void {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+/**
+ * Randomly select up to maxUsers from all waiting sessions (demo mode).
+ * Marks chosen as 'selected', rest as 'rejected'.
+ */
+export function runMockRandomSelection(maxUsers: number = 40): number {
+  const data = getMockData();
+  const waitingIds = Object.keys(data.sessions).filter(
+    (id) => data.sessions[id].status === 'waiting'
+  );
+  shuffle(waitingIds);
+  const selectedIds = new Set(waitingIds.slice(0, maxUsers));
+  for (const id of waitingIds) {
+    updateMockSessionStatus(id, selectedIds.has(id) ? 'selected' : 'rejected');
+  }
+  return selectedIds.size;
+}
+
 // Timer functions
 export function getMockTimer(): MockCountdownTimer | null {
   const data = getMockData();

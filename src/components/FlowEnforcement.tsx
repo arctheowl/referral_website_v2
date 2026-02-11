@@ -83,7 +83,7 @@ export default function FlowEnforcement({
               router.push('/');
               return;
             case 'selected':
-              router.push('/referral-form');
+              router.push('/selected');
               return;
             case 'rejected':
               router.push('/not-selected');

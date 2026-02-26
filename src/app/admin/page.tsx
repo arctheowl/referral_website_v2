@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { 
-  ClockIcon, 
   UsersIcon, 
   DocumentTextIcon, 
   UserGroupIcon,
@@ -10,23 +9,13 @@ import {
   StopIcon
 } from "@heroicons/react/24/outline";
 import { 
-  getCountdownTimer, 
   getQueueStatus, 
-  updateCountdownTimer, 
   openQueue, 
   closeQueue, 
-  selectUsersForReferral,
   getReferralApplications,
   getWaitlistEntries,
   getTotalUniqueUsers
 } from "../actions";
-
-interface CountdownTimer {
-  id: number;
-  start_time: string;
-  end_time: string;
-  is_active: boolean;
-}
 
 interface QueueStatus {
   id: number;
@@ -37,26 +26,22 @@ interface QueueStatus {
 }
 
 export default function AdminDashboard() {
-  const [countdownTimer, setCountdownTimer] = useState<CountdownTimer | null>(null);
   const [queueStatus, setQueueStatus] = useState<QueueStatus | null>(null);
   const [referralApplications, setReferralApplications] = useState<Record<string, any>[]>([]);
   const [waitlistEntries, setWaitlistEntries] = useState<Record<string, any>[]>([]);
   const [totalUniqueUsers, setTotalUniqueUsers] = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [newEndTime, setNewEndTime] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [timer, queue, applications, waitlist, uniqueUsers] = await Promise.all([
-          getCountdownTimer(),
+        const [queue, applications, waitlist, uniqueUsers] = await Promise.all([
           getQueueStatus(),
           getReferralApplications(),
           getWaitlistEntries(),
           getTotalUniqueUsers()
         ]);
 
-        setCountdownTimer(timer as CountdownTimer | null);
         setQueueStatus(queue as QueueStatus | null);
         setReferralApplications(applications);
         setWaitlistEntries(waitlist);
@@ -70,22 +55,6 @@ export default function AdminDashboard() {
 
     fetchData();
   }, []);
-
-  const handleUpdateTimer = async () => {
-    if (!newEndTime) return;
-
-    try {
-      const startTime = new Date().toISOString();
-      const result = await updateCountdownTimer(startTime, newEndTime);
-      if (result.success) {
-        const timer = await getCountdownTimer();
-        setCountdownTimer(timer as CountdownTimer | null);
-        setNewEndTime("");
-      }
-    } catch (error) {
-      console.error("Error updating timer:", error);
-    }
-  };
 
   const handleOpenQueue = async () => {
     try {
@@ -111,42 +80,8 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleSelectUsers = async () => {
-    try {
-      const result = await selectUsersForReferral();
-      if (result.success) {
-        const [queue, applications, waitlist, uniqueUsers] = await Promise.all([
-          getQueueStatus(),
-          getReferralApplications(),
-          getWaitlistEntries(),
-          getTotalUniqueUsers()
-        ]);
-        setQueueStatus(queue as QueueStatus | null);
-        setReferralApplications(applications);
-        setWaitlistEntries(waitlist);
-        setTotalUniqueUsers(uniqueUsers);
-      }
-    } catch (error) {
-      console.error("Error selecting users:", error);
-    }
-  };
-
   const formatTime = (dateString: string) => {
     return new Date(dateString).toLocaleString();
-  };
-
-  const getTimeRemaining = (endTime: string) => {
-    const end = new Date(endTime).getTime();
-    const now = new Date().getTime();
-    const diff = end - now;
-    
-    if (diff <= 0) return "Expired";
-    
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    
-    return `${hours}h ${minutes}m ${seconds}s`;
   };
 
   if (loading) {
@@ -172,56 +107,6 @@ export default function AdminDashboard() {
 
           {/* Control Panel */}
           <div className="grid lg:grid-cols-2 gap-8 mb-8">
-            {/* Countdown Timer Control */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-black mb-4 flex items-center">
-                <ClockIcon className="h-6 w-6 text-blue-600 mr-2" />
-                Countdown Timer
-              </h2>
-              
-              {countdownTimer && (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="text-black">Start Time:</span>
-                      <p className="font-medium">{formatTime(countdownTimer.start_time)}</p>
-                    </div>
-                    <div>
-                      <span className="text-black">End Time:</span>
-                      <p className="font-medium">{formatTime(countdownTimer.end_time)}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <span className="text-blue-800 font-medium">
-                      Time Remaining: {getTimeRemaining(countdownTimer.end_time)}
-                    </span>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-black mb-1">
-                        Set New End Time
-                      </label>
-                      <input
-                        type="datetime-local"
-                        value={newEndTime}
-                        onChange={(e) => setNewEndTime(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <button
-                      onClick={handleUpdateTimer}
-                      disabled={!newEndTime}
-                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Update Timer
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* Queue Management */}
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-semibold text-black mb-4 flex items-center">
@@ -265,14 +150,6 @@ export default function AdminDashboard() {
                     >
                       <StopIcon className="h-4 w-4 mr-2" />
                       Close Queue
-                    </button>
-                    
-                    <button
-                      onClick={handleSelectUsers}
-                      className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 flex items-center justify-center"
-                    >
-                      <UserGroupIcon className="h-4 w-4 mr-2" />
-                      Select 40 Users
                     </button>
                   </div>
                 </div>

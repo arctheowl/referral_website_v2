@@ -4,9 +4,8 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircleIcon, XCircleIcon, UserIcon, CalendarIcon, PhoneIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { getUserSession, submitReferralForm, checkFormSubmissionStatus } from "../actions";
-import TestingNavigation from "@/components/TestingNavigation";
 import FlowEnforcement from "@/components/FlowEnforcement";
-import { shouldShowDebugInfo, isTestingMode } from "@/lib/config";
+import { isTestingMode } from "@/lib/config";
 
 interface FormData {
   name: string;
@@ -248,7 +247,6 @@ function ReferralFormContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
-      <TestingNavigation currentPage="/referral-form" />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -259,19 +257,6 @@ function ReferralFormContent() {
             <p className="text-lg text-black">
               Congratulations! You've been selected to complete the referral form.
             </p>
-            
-            {/* Debug Info - Only show in testing/development mode */}
-            {shouldShowDebugInfo() && formSubmissionStatus && (
-              <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                <h3 className="text-sm font-semibold text-blue-900 mb-2">Session Status</h3>
-                <div className="text-sm text-blue-900 space-y-1">
-                  <p><strong>Can Submit:</strong> {formSubmissionStatus.canSubmit ? 'Yes' : 'No'}</p>
-                  <p><strong>Already Submitted:</strong> {formSubmissionStatus.alreadySubmitted ? 'Yes' : 'No'}</p>
-                  <p><strong>Session Status:</strong> {formSubmissionStatus.sessionStatus}</p>
-                  <p><strong>Session ID:</strong> <code className="bg-blue-100 px-1 rounded">{sessionId}</code></p>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Progress Bar */}

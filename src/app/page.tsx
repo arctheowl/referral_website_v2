@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClockIcon, UsersIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { getQueueStatus, createUserSession, getUserSession, checkEligibilityStatus } from "./actions";
-import TestingNavigation from "@/components/TestingNavigation";
-import { shouldShowDebugInfo, isTestingMode, isDemoMode } from "@/lib/config";
-import { useDemoSession, useDemoTimer, useDemoQueue } from "@/lib/demo-hooks";
+import { isTestingMode, isDemoMode } from "@/lib/config";
 import { getMockEligibility, getMockSession, getMockTimer, getMockQueue, createMockSession, runMockRandomSelection } from "@/lib/mock-data";
 
 export default function WaitingRoomNew() {
@@ -22,11 +20,6 @@ export default function WaitingRoomNew() {
   const [dataLoaded, setDataLoaded] = useState(false);
   const [countdownCompleted, setCountdownCompleted] = useState(false);
   const [userSelectionTriggered, setUserSelectionTriggered] = useState(false);
-  
-  // Demo mode hooks
-  const { session: demoSession, createSession: createDemoSession } = useDemoSession(sessionId);
-  const { timer: demoTimer } = useDemoTimer();
-  const { queue: demoQueue } = useDemoQueue();
 
   // Session ID setup and database initialization
   useEffect(() => {
@@ -224,7 +217,11 @@ export default function WaitingRoomNew() {
     setUserSelectionTriggered(true);
 
     if (isDemoMode()) {
-      // Demo mode: run mock selection then redirect via status (existing flow)
+      const eligibility = getMockEligibility(sessionId);
+      if (eligibility && eligibility.eligible === false) {
+        router.push("/not-selected");
+        return;
+      }
       const queue = getMockQueue();
       const maxUsers = queue?.max_users ?? 40;
       runMockRandomSelection(maxUsers);
@@ -234,9 +231,15 @@ export default function WaitingRoomNew() {
       return;
     }
 
-    // For now: random redirect only (no DB selection)
-    const goToSelected = Math.random() < 0.5;
-    router.push(goToSelected ? "/selected" : "/not-selected");
+    (async () => {
+      const eligibility = await checkEligibilityStatus(sessionId);
+      if (eligibility && eligibility.eligible === false) {
+        router.push("/not-selected");
+        return;
+      }
+      const goToSelected = Math.random() < 0.5;
+      router.push(goToSelected ? "/selected" : "/not-selected");
+    })();
   }, [countdownCompleted, userSelectionTriggered, userSession, sessionId, router]);
 
   // Handle redirects based on user status (selected → /selected, rejected → /not-selected, etc.)
@@ -262,37 +265,6 @@ export default function WaitingRoomNew() {
         console.log("User still waiting, no redirect needed");
     }
   }, [userSession, countdownCompleted, router]);
-
-  // Poll for status updates after countdown completes (immediate refetch + then every 2s)
-  useEffect(() => {
-    if (!countdownCompleted || !userSession || userSession.status !== 'waiting') return;
-    
-    console.log("Starting status polling after countdown completion");
-    
-    let cancelled = false;
-    const refetch = async () => {
-      try {
-        const updatedSession = await getUserSession(sessionId);
-        if (cancelled) return;
-        if (updatedSession && updatedSession.status !== userSession.status) {
-          console.log("Status update detected:", updatedSession.status);
-          setUserSession(updatedSession);
-        }
-      } catch (error) {
-        if (!cancelled) console.error("Error polling user session:", error);
-      }
-    };
-
-    // Refetch once immediately so we pick up selection result without waiting
-    refetch();
-    const pollInterval = setInterval(refetch, 2000);
-    
-    return () => {
-      cancelled = true;
-      console.log("Stopping status polling");
-      clearInterval(pollInterval);
-    };
-  }, [countdownCompleted, userSession, sessionId]);
 
   const formatTime = (milliseconds: number) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -343,10 +315,17 @@ export default function WaitingRoomNew() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <TestingNavigation currentPage="/" />
-      <div className="container mx-auto px-4 py-8 grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 items-start">
+      <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
        
-        <div className="lg:col-span-4 mx-auto">
+        {/* Logo - same position as eligibility page */}
+        <div className="flex flex-col items-center justify-center lg:col-span-1 min-h-[200px] lg:min-h-[80vh]">
+          <img
+            src="/MustardSeed_Primary-Logo.png"
+            alt="Mustard Seed"
+            className="w-full max-w-[220px] h-full object-contain"
+          />
+        </div>
+        <div className="lg:col-span-2 lg:col-start-2">
           <div className="max-w-4xl">
           {/* Header */}
           <div className="text-center mb-8">
@@ -420,50 +399,7 @@ export default function WaitingRoomNew() {
                 </div>
               </div>
             </div>
-             {/* Logo - same position as eligibility page */}
-        <div className="flex flex-col items-center justify-center col-span-2 w-1/2 mx-auto">
-          <img
-            src="/MustardSeed_Primary-Logo.png"
-            alt="Mustard Seed"
-            className="w-full h-full object-contain"
-          />
-        </div>
           </div>
-
-          {/* Session Info */}
-          {/* <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-xl font-semibold text-black mb-4">Session Information</h3>
-            <div className="space-y-2 text-black">
-              <p><strong>Session ID:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-black">{sessionId}</code></p>
-              <p><strong>Status:</strong> <span className="text-green-600 font-semibold">{userSession?.status || 'Waiting in Queue'}</span></p>
-              <p><strong>Session Type:</strong> <span className="text-blue-600">{isResumingSession ? 'Resumed' : 'New'}</span></p>
-              <p><strong>Data Loaded:</strong> <span className="text-purple-600">{dataLoaded ? 'Yes' : 'No'}</span></p>
-              <p><strong>Countdown Source:</strong> <span className="text-orange-600">{countdown > 0 ? 'Database' : 'Default'}</span></p>
-              <p><strong>Countdown Status:</strong> <span className="text-red-600">{countdownCompleted ? 'Completed' : 'Running'}</span></p>
-              <p><strong>Selection Triggered:</strong> <span className="text-yellow-600">{userSelectionTriggered ? 'Yes' : 'No'}</span></p>
-            </div>
-          </div> */}
-
-          {/* Debug Controls - Only show in testing/development mode */}
-          {/* {shouldShowDebugInfo() && (
-            <div className="mt-8 bg-yellow-50 rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-black mb-4">Debug Controls</h3>
-              <div className="space-x-4">
-                <button
-                  onClick={clearSession}
-                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-                >
-                  Clear Session & Reload
-                </button>
-                <a
-                  href="/minimal"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 inline-block"
-                >
-                  Test Minimal Page
-                </a>
-              </div>
-            </div>
-          )} */}
 
           {/* Footer */}
           <div className="mt-8 text-center text-sm text-black">

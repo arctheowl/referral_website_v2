@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CheckCircleIcon, XCircleIcon, AcademicCapIcon, MapPinIcon, BuildingOfficeIcon, UserIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { submitEligibilityCheck, checkEligibilityStatus } from "../actions";
-import TestingNavigation from "@/components/TestingNavigation";
 import { isTestingMode, isDemoMode } from "@/lib/config";
 import { useDemoEligibility } from "@/lib/demo-hooks";
 
@@ -19,31 +18,33 @@ interface EligibilityData {
   canAttendHospital: boolean;
 }
 
-// Catchment towns
+// Catchment towns (alphabetical)
 const CATCHMENT_TOWNS = [
   "Aldershot",
-  "Farnborough",
-  "Fleet",
-  "Church Crookham",
-  "Yateley",
-  "Hartley Wintney",
-  "Odiham",
-  "Hook",
-  "Farnham",
-  "Badshot Lea",
   "Ash",
   "Ash Vale",
+  "Badshot Lea",
   "Bagshot",
+  "Bisley",
   "Blackwater",
   "Camberley",
+  "Church Crookham",
+  "Farnborough",
+  "Farnham",
+  "Fleet",
   "Frimley",
   "Frimley Green",
-  "Mytchett",
-  "Tongham",
+  "Hartley Wintney",
+  "Hook",
   "Lightwater",
+  "Mytchett",
+  "Odiham",
   "Pirbright",
-  "Bisley"
+  "Tongham",
+  "Yateley"
 ];
+
+const NONE_OF_THE_ABOVE_VALUE = "none_of_the_above";
 
 // Diagnosis options
 const DIAGNOSIS_OPTIONS = [
@@ -220,7 +221,6 @@ export default function EligibilityPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100">
-      <TestingNavigation currentPage="/eligibility" />
       <div className="container mx-auto px-4 py-8 grid grid-cols-3 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
           {/* Logo */}
           <div className="flex flex-col items-center justify-center col-span-1 min-h-[80vh]">
@@ -318,6 +318,7 @@ export default function EligibilityPage() {
                       {opt.label}
                     </option>
                   ))}
+                  <option value={NONE_OF_THE_ABOVE_VALUE}>None of the above</option>
                 </select>
               </div>
 
@@ -339,6 +340,7 @@ export default function EligibilityPage() {
                       {year}
                     </option>
                   ))}
+                  <option value={NONE_OF_THE_ABOVE_VALUE}>None of the above</option>
                 </select>
               </div>
 
@@ -360,6 +362,7 @@ export default function EligibilityPage() {
                       {town}
                     </option>
                   ))}
+                  <option value={NONE_OF_THE_ABOVE_VALUE}>None of the above</option>
                 </select>
               </div>
 
@@ -381,11 +384,11 @@ export default function EligibilityPage() {
                         I confirm that my child can be brought to <strong>Odiham Cottage Hospital</strong> during school hours for appointments. *
                       </span>
                     </div>
-                    <p className="mt-2 text-xs text-gray-600">
-                      This is required as our services are provided during school hours at this location.
-                    </p>
                   </label>
                 </div>
+                <p className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-md text-sm font-medium text-amber-900">
+                  *This is required as our services are provided during school hours at this location.
+                </p>
               </div>
             </div>
 

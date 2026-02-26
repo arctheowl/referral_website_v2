@@ -113,6 +113,7 @@ export const createTables = async () => {
 
   // Eligibility check table (pre-screening before waiting room).
   // selection_status: NULL until countdown ends, then 'selected' or 'rejected'.
+  // eligible: false when user chose "none of the above" for diagnosis/school_year/catchment_town; they still go to waiting room but are never selected.
   await sql`
     CREATE TABLE IF NOT EXISTS eligibility_checks (
       id SERIAL PRIMARY KEY,
@@ -124,11 +125,13 @@ export const createTables = async () => {
       school_year VARCHAR(50) NOT NULL,
       catchment_town VARCHAR(255) NOT NULL,
       can_attend_hospital BOOLEAN NOT NULL,
+      eligible BOOLEAN DEFAULT true,
       selection_status VARCHAR(50),
       submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
   await sql`ALTER TABLE eligibility_checks ADD COLUMN IF NOT EXISTS selection_status VARCHAR(50);`;
+  await sql`ALTER TABLE eligibility_checks ADD COLUMN IF NOT EXISTS eligible BOOLEAN DEFAULT true;`;
 
   // Initialize default values
   await sql`

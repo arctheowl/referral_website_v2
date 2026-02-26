@@ -11,7 +11,6 @@ import {
   ExclamationTriangleIcon
 } from "@heroicons/react/24/outline";
 import { getUserSession, addToWaitlist } from "../actions";
-import TestingNavigation from "@/components/TestingNavigation";
 import FlowEnforcement from "@/components/FlowEnforcement";
 import { isTestingMode, isDemoMode } from "@/lib/config";
 import { getMockSession } from "@/lib/mock-data";
@@ -161,7 +160,6 @@ function NotSelectedContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100">
-      <TestingNavigation currentPage="/not-selected" />
       <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
         {/* Logo - same position as eligibility page */}
         <div className="flex flex-col items-center justify-center lg:col-span-1 min-h-[200px] lg:min-h-[80vh]">

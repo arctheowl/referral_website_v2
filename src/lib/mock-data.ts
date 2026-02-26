@@ -11,6 +11,7 @@ export interface MockEligibility {
   school_year: string;
   catchment_town: string;
   can_attend_hospital: boolean;
+  eligible?: boolean;
   submitted_at: string;
 }
 
@@ -112,11 +113,18 @@ export function getMockEligibility(sessionId: string): MockEligibility | null {
   return data.eligibility[sessionId] || null;
 }
 
-export function saveMockEligibility(sessionId: string, eligibility: Omit<MockEligibility, 'session_id' | 'submitted_at'>) {
+const NONE_OF_THE_ABOVE_VALUE = "none_of_the_above";
+
+export function saveMockEligibility(sessionId: string, eligibility: Omit<MockEligibility, 'session_id' | 'submitted_at' | 'eligible'>) {
   const data = getMockData();
+  const eligible =
+    eligibility.school_year !== NONE_OF_THE_ABOVE_VALUE &&
+    eligibility.diagnosis !== NONE_OF_THE_ABOVE_VALUE &&
+    eligibility.catchment_town !== NONE_OF_THE_ABOVE_VALUE;
   data.eligibility[sessionId] = {
     ...eligibility,
     session_id: sessionId,
+    eligible,
     submitted_at: new Date().toISOString()
   };
   saveMockData(data);

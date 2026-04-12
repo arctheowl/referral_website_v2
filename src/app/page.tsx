@@ -300,7 +300,7 @@ export default function WaitingRoomNew() {
                   <CheckCircleIcon className="h-5 w-5 text-blue-600 mr-2" />
                   <span className="text-sm text-blue-800">
                     {countdown > 0
-                      ? "You&apos;re in the waiting room. Please wait for the countdown to finish."
+                      ? "You're in the waiting room. Please wait for the countdown to finish."
                       : countdownCompleted
                         ? "Selection completed! Please wait for your status update..."
                         : "Selection in progress..."

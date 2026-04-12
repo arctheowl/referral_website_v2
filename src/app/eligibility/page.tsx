@@ -238,20 +238,20 @@ export default function EligibilityPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100">
-      <div className="container mx-auto px-4 py-8 grid grid-cols-3 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
-          {/* Logo */}
-          <div className="flex flex-col items-center justify-center col-span-1 min-h-[80vh]">
+      <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
+          {/* Logo: full width on top (mobile); left column on lg+ (same pattern as waiting room) */}
+          <div className="flex flex-col items-center justify-center lg:col-span-1 min-h-[200px] lg:min-h-[80vh]">
               <img
                 src="/MustardSeed_Primary-Logo.png"
                 alt="Mustard Seed"
-                className="w-full h-full object-contain lg:h-full self-center lg:self-center"
+                className="w-full max-w-[220px] h-full object-contain lg:max-w-none"
               />
           </div>
           {/* Header + Form */}
-          <div className="flex flex-col items-center justify-center col-span-3 col-start-2 lg:col-span-4 lg:col-start-2" >
+          <div className="flex flex-col items-center justify-center w-full lg:col-span-2 lg:col-start-2" >
         
 
-            <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-8">
+            <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-8 w-full">
             {error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
                 <div className="flex items-center">

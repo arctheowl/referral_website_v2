@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { runSelectionIfNeeded } from "@/app/actions";
+import { verifyAdminCookie } from "@/lib/admin-cookie";
 
-function isAuthorized(request: Request): boolean {
+async function isAuthorized(request: Request): Promise<boolean> {
   const configuredSecret = (
     process.env.SELECTION_CRON_SECRET ||
     process.env.CRON_SECRET
@@ -12,14 +14,21 @@ function isAuthorized(request: Request): boolean {
   const bearer = authHeader?.toLowerCase().startsWith("bearer ")
     ? authHeader.slice("bearer ".length).trim()
     : "";
-  return Boolean(
+  const secretOk = Boolean(
     (providedSecret && providedSecret === configuredSecret) ||
       (bearer && bearer === configuredSecret)
   );
+  if (secretOk) return true;
+
+  const adminSecret = process.env.ADMIN_SECRET?.trim();
+  if (!adminSecret) return false;
+  const cookieStore = await cookies();
+  const adminCookie = cookieStore.get("ms_admin_session")?.value;
+  return verifyAdminCookie(adminSecret, adminCookie);
 }
 
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 

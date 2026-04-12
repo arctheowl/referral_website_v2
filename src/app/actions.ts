@@ -772,15 +772,6 @@ export async function resolveSelectionOutcome(sessionId: string) {
       return { success: false, pending: false, error: "Missing session ID" };
     }
 
-    const selectionRun = await runSelectionIfNeeded();
-    if (!selectionRun.success) {
-      return {
-        success: false,
-        pending: false,
-        error: selectionRun.error || "Failed to run selection",
-      };
-    }
-
     const eligibility = await checkEligibilityStatus(normalizedSessionId);
     if (!eligibility) {
       return { success: false, pending: false, error: "Eligibility check not found for this session" };

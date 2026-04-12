@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { 
   UsersIcon,
   DocumentTextIcon, 
@@ -74,6 +74,8 @@ export default function AdminDashboard() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [autoRunMessage, setAutoRunMessage] = useState<string>("");
+  const autoTriggeredKeyRef = useRef<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,7 +127,10 @@ export default function AdminDashboard() {
     if (!dateString) return "-";
     const parsed = new Date(dateString);
     if (Number.isNaN(parsed.getTime())) return "-";
-    return parsed.toLocaleString();
+    return parsed.toLocaleString("en-GB", {
+      timeZone: "Europe/London",
+      timeZoneName: "short",
+    });
   };
 
   const selectionRank = (value: boolean | null) => {
@@ -236,6 +241,58 @@ export default function AdminDashboard() {
     }
   };
 
+  const triggerSelectionViaApi = async () => {
+    const response = await fetch("/api/selection/run", {
+      method: "POST",
+      credentials: "include",
+    });
+    const data = (await response.json().catch(() => ({}))) as {
+      ok?: boolean;
+      error?: string;
+      reason?: string;
+      selectedCount?: number;
+      ranSelection?: boolean;
+    };
+    if (!response.ok || data.ok === false) {
+      throw new Error(data.error || `Selection API failed with status ${response.status}`);
+    }
+    return data;
+  };
+
+  useEffect(() => {
+    if (!countdownTimer?.end_time) return;
+    const status = String(countdownTimer.selection_status ?? "").toLowerCase();
+    if (status === "completed" || status === "running") return;
+
+    const triggerKey = `${countdownTimer.id}:${countdownTimer.end_time}`;
+    if (autoTriggeredKeyRef.current === triggerKey) return;
+
+    const endAt = new Date(countdownTimer.end_time).getTime();
+    if (Number.isNaN(endAt)) return;
+
+    const now = Date.now();
+    const delay = Math.max(0, endAt - now);
+
+    const timer = setTimeout(async () => {
+      autoTriggeredKeyRef.current = triggerKey;
+      try {
+        const result = await triggerSelectionViaApi();
+        if (result.ranSelection) {
+          setAutoRunMessage("Selection auto-run completed from countdown expiry.");
+        } else {
+          setAutoRunMessage(`Selection auto-run status: ${result.reason || "already processed"}.`);
+        }
+      } catch (error) {
+        console.error("Automatic selection trigger failed:", error);
+        setAutoRunMessage("Automatic selection trigger failed. Please use Run Selection Now.");
+      } finally {
+        await refreshAdminData();
+      }
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [countdownTimer?.end_time, countdownTimer?.id, countdownTimer?.selection_status]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -309,6 +366,11 @@ export default function AdminDashboard() {
                       {runningSelectionNow ? "Running..." : "Run Selection Now"}
                     </button>
                   </div>
+                  {autoRunMessage && (
+                    <p className="text-xs text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-md px-3 py-2">
+                      {autoRunMessage}
+                    </p>
+                  )}
                 </div>
               )}
             </div>

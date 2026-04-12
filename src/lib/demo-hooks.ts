@@ -41,6 +41,7 @@ export function useDemoEligibility(sessionId: string) {
   const submitEligibility = async (data: {
     parentName: string;
     primaryEmail: string;
+    phoneNumber: string;
     secondaryEmail?: string;
     diagnosis: string;
     schoolYear: string;
@@ -52,6 +53,7 @@ export function useDemoEligibility(sessionId: string) {
     saveMockEligibility(sessionId, {
       parent_name: data.parentName,
       primary_email: data.primaryEmail,
+      phone_number: data.phoneNumber,
       secondary_email: data.secondaryEmail,
       diagnosis: data.diagnosis,
       school_year: data.schoolYear,

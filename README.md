@@ -38,7 +38,6 @@ A modern, scalable referral system with waiting room functionality, countdown ti
 - `countdown_timer`: Manages countdown timing and status
 - `queue_management`: Tracks queue state and user limits
 - `user_sessions`: Individual user session tracking
-- `referral_applications`: Completed referral forms
 - `waitlist`: Users who didn't make the initial selection
 
 ## 📁 Project Structure

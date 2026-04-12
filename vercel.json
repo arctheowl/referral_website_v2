@@ -1,0 +1,9 @@
+{
+  "crons": [
+    {
+      "path": "/api/selection/run",
+      "schedule": "* * * * *"
+    }
+  ]
+}
+

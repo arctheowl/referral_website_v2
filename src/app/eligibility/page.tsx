@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { CheckCircleIcon, XCircleIcon, AcademicCapIcon, MapPinIcon, BuildingOfficeIcon, UserIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
-import { submitEligibilityCheck, checkEligibilityStatus } from "../actions";
+import { CheckCircleIcon, XCircleIcon, AcademicCapIcon, MapPinIcon, BuildingOfficeIcon, UserIcon, EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import { submitEligibilityCheck, bootstrapReferralSession } from "../actions";
 import { isTestingMode, isDemoMode } from "@/lib/config";
 import { useDemoEligibility } from "@/lib/demo-hooks";
 
 interface EligibilityData {
   parentName: string;
   primaryEmail: string;
+  phoneNumber: string;
   secondaryEmail: string;
   diagnosis: string;
   schoolYear: string;
@@ -72,6 +72,7 @@ export default function EligibilityPage() {
   const [eligibilityData, setEligibilityData] = useState<EligibilityData>({
     parentName: "",
     primaryEmail: "",
+    phoneNumber: "",
     secondaryEmail: "",
     diagnosis: "",
     schoolYear: "",
@@ -93,7 +94,21 @@ export default function EligibilityPage() {
       }
       
       setSessionId(existingSessionId);
-      
+
+      const bootstrap = await bootstrapReferralSession(existingSessionId);
+      if (bootstrap.status === "rejected") {
+        router.replace("/not-selected");
+        return;
+      }
+      if (bootstrap.status === "selected") {
+        router.replace("/selected");
+        return;
+      }
+      if (bootstrap.status === "completed") {
+        router.replace("/submitted");
+        return;
+      }
+
       // Check if eligibility already submitted
       if (isDemoMode()) {
         // In demo mode, check mock data
@@ -101,15 +116,9 @@ export default function EligibilityPage() {
         initializeMockData();
         setLoading(false);
       } else if (!isTestingMode()) {
-        try {
-          const existingEligibility = await checkEligibilityStatus(existingSessionId);
-          if (existingEligibility) {
-            // Already submitted, redirect to waiting room
-            router.push('/');
-            return;
-          }
-        } catch (err) {
-          console.error("Error checking eligibility:", err);
+        if (bootstrap.hasEligibility) {
+          router.push("/");
+          return;
         }
         setLoading(false);
       } else {
@@ -145,6 +154,12 @@ export default function EligibilityPage() {
       return;
     }
 
+    if (!eligibilityData.phoneNumber) {
+      setError("Please enter phone number");
+      setSubmitting(false);
+      return;
+    }
+
     if (!eligibilityData.diagnosis) {
       setError("Please select diagnosis status");
       setSubmitting(false);
@@ -176,6 +191,7 @@ export default function EligibilityPage() {
         result = await submitDemoEligibility({
           parentName: eligibilityData.parentName,
           primaryEmail: eligibilityData.primaryEmail,
+          phoneNumber: eligibilityData.phoneNumber,
           secondaryEmail: eligibilityData.secondaryEmail || undefined,
           diagnosis: eligibilityData.diagnosis,
           schoolYear: eligibilityData.schoolYear,
@@ -186,6 +202,7 @@ export default function EligibilityPage() {
         result = await submitEligibilityCheck(sessionId, {
           parentName: eligibilityData.parentName,
           primaryEmail: eligibilityData.primaryEmail,
+          phoneNumber: eligibilityData.phoneNumber,
           secondaryEmail: eligibilityData.secondaryEmail || undefined,
           diagnosis: eligibilityData.diagnosis,
           schoolYear: eligibilityData.schoolYear,
@@ -282,6 +299,23 @@ export default function EligibilityPage() {
                   onChange={(e) => handleInputChange('primaryEmail', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 bg-white"
                   placeholder="your@email.com"
+                />
+              </div>
+
+              {/* Secondary Email (optional) */}
+              {/* Phone Number */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center">
+                  <PhoneIcon className="h-5 w-5 mr-2 text-purple-600" />
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={eligibilityData.phoneNumber}
+                  onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 bg-white"
+                  placeholder="Your phone number"
                 />
               </div>
 
@@ -409,7 +443,7 @@ export default function EligibilityPage() {
                 <CheckCircleIcon className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5" />
                 <div className="text-sm text-blue-900">
                   <p className="font-medium mb-1">What happens next?</p>
-                  <p>Once you submit this form, you'll be taken to the waiting room where you'll join the queue for the referral program.</p>
+                  <p>Once you submit this form, you&apos;ll be taken to the waiting room where you&apos;ll join the queue for the referral program.</p>
                 </div>
               </div>
             </div>

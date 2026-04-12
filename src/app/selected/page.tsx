@@ -3,9 +3,9 @@
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import FlowEnforcement from "@/components/FlowEnforcement";
 
-export default function Submitted() {
+export default function SelectedPage() {
   return (
-    <FlowEnforcement requiredStatus="completed">
+    <FlowEnforcement requiredStatus="selected">
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
         <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start">
           {/* Logo - same position as eligibility page */}

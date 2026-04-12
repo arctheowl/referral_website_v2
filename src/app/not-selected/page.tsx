@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { 
   HeartIcon, 
   PhoneIcon, 
@@ -10,153 +9,72 @@ import {
   ChatBubbleLeftRightIcon,
   ExclamationTriangleIcon
 } from "@heroicons/react/24/outline";
-import { getUserSession, addToWaitlist } from "../actions";
+import { addNewsletterSignup } from "../actions";
 import FlowEnforcement from "@/components/FlowEnforcement";
-import { isTestingMode, isDemoMode } from "@/lib/config";
-import { getMockSession } from "@/lib/mock-data";
+import { isDemoMode } from "@/lib/config";
 
-interface WaitlistData {
+interface NewsletterData {
   name: string;
   email: string;
-  postcode: string;
-  childDOB: string;
-  childName: string;
 }
 
 function NotSelectedContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const [sessionId, setSessionId] = useState<string>("");
-  const [loading, setLoading] = useState(true);
   const [showWaitlistForm, setShowWaitlistForm] = useState(false);
-  const [waitlistData, setWaitlistData] = useState<WaitlistData>({
+  const [newsletterData, setNewsletterData] = useState<NewsletterData>({
     name: "",
-    email: "",
-    postcode: "",
-    childDOB: "",
-    childName: ""
+    email: ""
   });
   const [submitting, setSubmitting] = useState(false);
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
 
   useEffect(() => {
-    const session = searchParams.get('session');
-    if (session) {
-      setSessionId(session);
-    } else {
-      // Try to get from localStorage
-      const existingSessionId = localStorage.getItem('referral_session_id');
-      if (existingSessionId) {
-        console.log("Found session ID in localStorage:", existingSessionId);
-        setSessionId(existingSessionId);
-      } else {
-        // In testing mode, allow access without session ID
-        if (isTestingMode()) {
-          console.log("Testing mode: Allowing access without session ID");
-          setSessionId('test-session-id');
-        } else {
-          console.log("No session ID found, redirecting to home");
-          router.push('/');
-        }
-      }
+    const existingSessionId = localStorage.getItem('referral_session_id');
+    if (existingSessionId) {
+      setSessionId(existingSessionId);
     }
-  }, [searchParams, router]);
-
-  useEffect(() => {
-    const checkUserStatus = async () => {
-      if (!sessionId) return;
-
-      // Skip database validation in testing/demo mode
-      if (isDemoMode()) {
-        console.log("Demo mode: Checking mock user status");
-        const mockSession = getMockSession(sessionId);
-        if (mockSession && mockSession.status === 'rejected') {
-          console.log("Demo mode: User is rejected, showing not-selected page");
-          setLoading(false);
-          return;
-        } else if (mockSession) {
-          console.log("Demo mode: User status is", mockSession.status, "- allowing access for demo");
-          setLoading(false);
-          return;
-        } else {
-          console.log("Demo mode: No mock session found, allowing access");
-          setLoading(false);
-          return;
-        }
-      }
-
-      if (isTestingMode()) {
-        console.log("Testing mode: Skipping user status validation");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const userSession = await getUserSession(sessionId);
-        if (!userSession || userSession.status !== 'rejected') {
-          // router.push('/');
-          setLoading(false);
-          return;
-        }
-      } catch (err) {
-        console.error("Error checking user status:", err);
-        router.push('/');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkUserStatus();
-  }, [sessionId, router]);
+  }, []);
 
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
 
     try {
-      let result;
+      let result: { success: boolean };
       if (isDemoMode()) {
-        // In demo mode, simulate waitlist submission
-        console.log("Demo mode: Simulating waitlist submission");
+        // In demo mode, simulate newsletter submission
+        console.log("Demo mode: Simulating newsletter submission");
         // Store in localStorage for demo
-        const waitlistKey = `demo_waitlist_${sessionId}`;
-        localStorage.setItem(waitlistKey, JSON.stringify({
-          ...waitlistData,
+        const newsletterKey = `demo_newsletter_${sessionId}`;
+        localStorage.setItem(newsletterKey, JSON.stringify({
+          ...newsletterData,
           sessionId,
-          added_at: new Date().toISOString()
+          created_at: new Date().toISOString()
         }));
         result = { success: true };
       } else {
-        result = await addToWaitlist(sessionId, waitlistData);
+        result = await addNewsletterSignup({
+          name: newsletterData.name,
+          email: newsletterData.email
+        });
       }
       
       if (result.success) {
         setWaitlistSuccess(true);
       }
     } catch (err) {
-      console.error("Error adding to waitlist:", err);
+      console.error("Error adding to newsletter:", err);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleInputChange = (field: keyof WaitlistData, value: string) => {
-    setWaitlistData(prev => ({
+  const handleInputChange = (field: keyof NewsletterData, value: string) => {
+    setNewsletterData(prev => ({
       ...prev,
       [field]: value
     }));
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-          <p className="text-black">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100">
@@ -207,11 +125,11 @@ function NotSelectedContent() {
                     <form onSubmit={handleWaitlistSubmit} className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-black mb-1">Your Name *</label>
-                        <input type="text" required value={waitlistData.name} onChange={(e) => handleInputChange('name', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900" />
+                        <input type="text" required value={newsletterData.name} onChange={(e) => handleInputChange('name', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-black mb-1">Email Address *</label>
-                        <input type="email" required value={waitlistData.email} onChange={(e) => handleInputChange('email', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900" />
+                        <input type="email" required value={newsletterData.email} onChange={(e) => handleInputChange('email', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900" />
                       </div>
                       <div className="flex space-x-3">
                         <button type="submit" disabled={submitting} className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50">

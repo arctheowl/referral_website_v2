@@ -119,7 +119,6 @@ npm start
 - `countdown_timer`: Timer management
 - `queue_management`: Queue state
 - `user_sessions`: User tracking
-- `referral_applications`: Form submissions
 - `waitlist`: Rejected user signups
 
 ## 🚀 Deployment Options

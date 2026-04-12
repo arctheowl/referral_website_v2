@@ -16,9 +16,7 @@ async function initializeDatabase() {
     console.log("Database initialized successfully!");
     console.log("Tables created:");
     console.log("- countdown_timer");
-    console.log("- queue_management");
     console.log("- user_sessions");
-    console.log("- referral_applications");
     console.log("- waitlist");
   } catch (error) {
     console.error("Error initializing database:", error);

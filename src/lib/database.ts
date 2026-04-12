@@ -28,21 +28,15 @@ export const createTables = async () => {
   `;
   await sql`ALTER TABLE countdown_timer ADD COLUMN IF NOT EXISTS selection_status VARCHAR(50);`;
   await sql`ALTER TABLE countdown_timer ADD COLUMN IF NOT EXISTS selected_at TIMESTAMP;`;
-
-  // Queue management table
   await sql`
-    CREATE TABLE IF NOT EXISTS queue_management (
-      id SERIAL PRIMARY KEY,
-      max_users INTEGER DEFAULT 4,
-      current_users INTEGER DEFAULT 0,
-      queue_position INTEGER DEFAULT 0,
-      is_open BOOLEAN DEFAULT false,
-      selection_completed_at TIMESTAMP,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+    CREATE UNIQUE INDEX IF NOT EXISTS countdown_timer_single_active_idx
+    ON countdown_timer ((is_active))
+    WHERE is_active = true;
   `;
-  await sql`ALTER TABLE queue_management ADD COLUMN IF NOT EXISTS selection_completed_at TIMESTAMP;`;
+  await sql`
+    CREATE INDEX IF NOT EXISTS countdown_timer_active_lookup_idx
+    ON countdown_timer (is_active, id DESC);
+  `;
 
   // User sessions table
   await sql`
@@ -56,45 +50,9 @@ export const createTables = async () => {
       completed_at TIMESTAMP
     );
   `;
-
-  // Referral applications table (for selected users)
   await sql`
-    CREATE TABLE IF NOT EXISTS referral_applications (
-      id SERIAL PRIMARY KEY,
-      session_id VARCHAR(255) REFERENCES user_sessions(session_id),
-      name VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL,
-      second_email VARCHAR(255),
-      signposted VARCHAR(255),
-      child_name VARCHAR(255) NOT NULL,
-      child_dob DATE NOT NULL,
-      parent_names VARCHAR(255),
-      siblings TEXT,
-      address TEXT,
-      phone VARCHAR(50),
-      school_name VARCHAR(255),
-      school_year VARCHAR(50),
-      diagnosis TEXT,
-      diagnosis_date DATE,
-      medication TEXT,
-      professionals TEXT,
-      eligibility TEXT,
-      interests TEXT,
-      interests_blob TEXT,
-      communicate_with_others TEXT,
-      follow_instructions TEXT,
-      visual_support TEXT,
-      social_communication TEXT,
-      highly_anxious TEXT,
-      recognise_emotions TEXT,
-      attend_school TEXT,
-      self_harm TEXT,
-      areas_of_difficulty TEXT,
-      daily_skills TEXT,
-      additional_support TEXT,
-      consent BOOLEAN NOT NULL,
-      submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+    CREATE INDEX IF NOT EXISTS user_sessions_status_idx
+    ON user_sessions (status);
   `;
 
   // Waitlist table (for rejected users)
@@ -112,7 +70,7 @@ export const createTables = async () => {
   `;
 
   // Eligibility check table (pre-screening before waiting room).
-  // selection_status: NULL until countdown ends, then 'selected' or 'rejected'.
+  // selection_status: NULL until countdown ends, then true (selected) or false (rejected).
   // eligible: false when user chose "none of the above" for diagnosis/school_year/catchment_town; they still go to waiting room but are never selected.
   await sql`
     CREATE TABLE IF NOT EXISTS eligibility_checks (
@@ -120,29 +78,60 @@ export const createTables = async () => {
       session_id VARCHAR(255) UNIQUE NOT NULL,
       parent_name VARCHAR(255),
       primary_email VARCHAR(255),
+      phone_number VARCHAR(50),
       secondary_email VARCHAR(255),
       diagnosis VARCHAR(255),
       school_year VARCHAR(50) NOT NULL,
       catchment_town VARCHAR(255) NOT NULL,
       can_attend_hospital BOOLEAN NOT NULL,
       eligible BOOLEAN DEFAULT true,
-      selection_status VARCHAR(50),
+      selection_status BOOLEAN,
       submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
-  await sql`ALTER TABLE eligibility_checks ADD COLUMN IF NOT EXISTS selection_status VARCHAR(50);`;
+  await sql`ALTER TABLE eligibility_checks ADD COLUMN IF NOT EXISTS phone_number VARCHAR(50);`;
+  await sql`ALTER TABLE eligibility_checks ADD COLUMN IF NOT EXISTS selection_status BOOLEAN;`;
+  await sql`
+    DO $$
+    BEGIN
+      IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_name = 'eligibility_checks'
+          AND column_name = 'selection_status'
+          AND data_type IN ('character varying', 'text')
+      ) THEN
+        ALTER TABLE eligibility_checks
+        ALTER COLUMN selection_status TYPE BOOLEAN
+        USING CASE
+          WHEN selection_status IS NULL THEN NULL
+          WHEN LOWER(selection_status::text) IN ('selected', 'true', 't', '1', 'yes') THEN TRUE
+          ELSE FALSE
+        END;
+      END IF;
+    END $$;
+  `;
   await sql`ALTER TABLE eligibility_checks ADD COLUMN IF NOT EXISTS eligible BOOLEAN DEFAULT true;`;
-
+  await sql`
+    CREATE INDEX IF NOT EXISTS eligibility_checks_eligible_idx
+    ON eligibility_checks (eligible);
+  `;
+  await sql`
+    CREATE INDEX IF NOT EXISTS eligibility_checks_selection_status_idx
+    ON eligibility_checks (selection_status);
+  `;
   // Initialize default values
-  await sql`
-    INSERT INTO countdown_timer (start_time, end_time, is_active)
-    VALUES (NOW(), NOW() + INTERVAL '1 hour', true)
-    ON CONFLICT DO NOTHING;
+  const activeCountdownRows = await sql`
+    SELECT id
+    FROM countdown_timer
+    WHERE is_active = true
+    LIMIT 1;
   `;
+  if (!activeCountdownRows.length) {
+    await sql`
+      INSERT INTO countdown_timer (start_time, end_time, is_active, selection_status)
+      VALUES (NOW(), NOW() + INTERVAL '1 hour', true, 'pending');
+    `;
+  }
 
-  await sql`
-    INSERT INTO queue_management (max_users, current_users, queue_position, is_open)
-    VALUES (4, 0, 0, false)
-    ON CONFLICT DO NOTHING;
-  `;
 };

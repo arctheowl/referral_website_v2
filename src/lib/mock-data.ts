@@ -6,12 +6,14 @@ export interface MockEligibility {
   session_id: string;
   parent_name: string;
   primary_email: string;
+  phone_number: string;
   secondary_email?: string;
   diagnosis: string;
   school_year: string;
   catchment_town: string;
   can_attend_hospital: boolean;
   eligible?: boolean;
+  selection_status?: boolean | null;
   submitted_at: string;
 }
 
@@ -115,7 +117,7 @@ export function getMockEligibility(sessionId: string): MockEligibility | null {
 
 const NONE_OF_THE_ABOVE_VALUE = "none_of_the_above";
 
-export function saveMockEligibility(sessionId: string, eligibility: Omit<MockEligibility, 'session_id' | 'submitted_at' | 'eligible'>) {
+export function saveMockEligibility(sessionId: string, eligibility: Omit<MockEligibility, 'session_id' | 'submitted_at' | 'eligible' | 'selection_status'>) {
   const data = getMockData();
   const eligible =
     eligibility.school_year !== NONE_OF_THE_ABOVE_VALUE &&
@@ -125,6 +127,7 @@ export function saveMockEligibility(sessionId: string, eligibility: Omit<MockEli
     ...eligibility,
     session_id: sessionId,
     eligible,
+    selection_status: null,
     submitted_at: new Date().toISOString()
   };
   saveMockData(data);
@@ -134,6 +137,21 @@ export function saveMockEligibility(sessionId: string, eligibility: Omit<MockEli
 export function getMockSession(sessionId: string): MockUserSession | null {
   const data = getMockData();
   return data.sessions[sessionId] || null;
+}
+
+/** Resolved status for flow gates (demo mode), including eligibility.selection_status when session is missing. */
+export function getMockEffectiveSessionStatus(
+  sessionId: string
+): "waiting" | "selected" | "rejected" | "completed" | null {
+  if (typeof window === "undefined") return null;
+  const session = getMockSession(sessionId);
+  if (session?.status === "completed") return "completed";
+  if (session) return session.status;
+  const el = getMockEligibility(sessionId);
+  if (!el) return null;
+  if (el.selection_status === true) return "selected";
+  if (el.selection_status === false) return "rejected";
+  return "waiting";
 }
 
 export function createMockSession(sessionId: string): MockUserSession {
@@ -188,14 +206,31 @@ function shuffle<T>(arr: T[]): void {
  */
 export function runMockRandomSelection(maxUsers: number = 40): number {
   const data = getMockData();
-  const waitingIds = Object.keys(data.sessions).filter(
-    (id) => data.sessions[id].status === 'waiting'
+  const waitingIds = Object.keys(data.sessions).filter((id) => {
+    const session = data.sessions[id];
+    const eligibility = data.eligibility[id];
+    return session.status === 'waiting' && !!eligibility;
+  });
+
+  const eligibleWaitingIds = waitingIds.filter(
+    (id) => data.eligibility[id]?.eligible !== false
   );
-  shuffle(waitingIds);
-  const selectedIds = new Set(waitingIds.slice(0, maxUsers));
+  shuffle(eligibleWaitingIds);
+  const selectedIds = new Set(eligibleWaitingIds.slice(0, maxUsers));
+
+  for (const id of waitingIds) {
+    if (data.eligibility[id]) {
+      data.eligibility[id].selection_status = false;
+    }
+  }
+
   for (const id of waitingIds) {
     updateMockSessionStatus(id, selectedIds.has(id) ? 'selected' : 'rejected');
+    if (selectedIds.has(id) && data.eligibility[id]) {
+      data.eligibility[id].selection_status = true;
+    }
   }
+  saveMockData(data);
   return selectedIds.size;
 }
 

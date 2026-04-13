@@ -74,6 +74,8 @@ export default function AdminDashboard() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [refreshingEligibility, setRefreshingEligibility] = useState(false);
+  const [refreshingNewsletter, setRefreshingNewsletter] = useState(false);
   const [autoRunMessage, setAutoRunMessage] = useState<string>("");
   const autoTriggeredKeyRef = useRef<string>("");
 
@@ -121,6 +123,30 @@ export default function AdminDashboard() {
     setTotalUniqueUsers(uniqueUsers);
     setSelectionSummary(selection);
     setCountdownTimer(timer as CountdownTimerRow | null);
+  };
+
+  const refreshEligibilityChecks = async () => {
+    setRefreshingEligibility(true);
+    try {
+      const checks = await getEligibilityChecks();
+      setEligibilityChecks(checks as EligibilityCheckEntry[]);
+    } catch (error) {
+      console.error("Error refreshing eligibility checks:", error);
+    } finally {
+      setRefreshingEligibility(false);
+    }
+  };
+
+  const refreshNewsletterEntries = async () => {
+    setRefreshingNewsletter(true);
+    try {
+      const newsletter = await getNewsletterEntries();
+      setNewsletterEntries(newsletter as NewsletterEntry[]);
+    } catch (error) {
+      console.error("Error refreshing newsletter entries:", error);
+    } finally {
+      setRefreshingNewsletter(false);
+    }
   };
 
   const formatTime = (dateString: string | null) => {
@@ -203,6 +229,32 @@ export default function AdminDashboard() {
     const link = document.createElement("a");
     link.href = url;
     link.download = `eligibility_checks_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadNewsletterCsv = () => {
+    const headers = ["Name", "Email", "Created"];
+
+    const rows = newsletterEntries.map((entry) => [
+      entry.name,
+      entry.email,
+      entry.created_at || entry.added_at || "",
+    ]);
+
+    const csvLines = [
+      headers.map((h) => toCsvValue(h)).join(","),
+      ...rows.map((row) => row.map((cell) => toCsvValue(cell)).join(",")),
+    ];
+
+    const csvContent = "\uFEFF" + csvLines.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `newsletter_signups_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -461,7 +513,6 @@ export default function AdminDashboard() {
                   }}
                   className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900"
                 >
-                  <option value="submitted">Sort: Submitted</option>
                   <option value="eligible">Sort: Eligibility</option>
                   <option value="selection_status">Sort: Selection Status</option>
                 </select>
@@ -482,6 +533,13 @@ export default function AdminDashboard() {
                   className="px-3 py-2 bg-emerald-600 text-white rounded-md text-sm hover:bg-emerald-700 disabled:opacity-50"
                 >
                   Download CSV
+                </button>
+                <button
+                  onClick={refreshEligibilityChecks}
+                  disabled={refreshingEligibility}
+                  className="px-3 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {refreshingEligibility ? "Refreshing..." : "Refresh"}
                 </button>
               </div>
             </div>
@@ -559,7 +617,25 @@ export default function AdminDashboard() {
 
           {/* Newsletter Signups */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-black mb-4">Newsletter Signups</h2>
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h2 className="text-xl font-semibold text-black">Newsletter Signups</h2>
+              <div className="flex gap-2">
+                <button
+                  onClick={downloadNewsletterCsv}
+                  disabled={newsletterEntries.length === 0}
+                  className="px-3 py-2 bg-emerald-600 text-white rounded-md text-sm hover:bg-emerald-700 disabled:opacity-50"
+                >
+                  Download CSV
+                </button>
+                <button
+                  onClick={refreshNewsletterEntries}
+                  disabled={refreshingNewsletter}
+                  className="px-3 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {refreshingNewsletter ? "Refreshing..." : "Refresh"}
+                </button>
+              </div>
+            </div>
             
             {newsletterEntries.length > 0 ? (
               <div className="overflow-x-auto">

@@ -6,17 +6,21 @@ import { useTheme } from "@/providers/theme-provider";
 export function ThemeToggle() {
   const { theme, toggle } = useTheme();
 
+  /*
+    toggle-sun / toggle-moon handle all color + hover states.
+    They sit outside @layer in globals.css and therefore override Tailwind
+    utilities — no specificity tricks needed.
+    Sun = warm amber (oklch 78% 0.17 72).
+    Moon = cool indigo (oklch 54% 0.20 265).
+  */
   return (
     <button
       onClick={toggle}
       aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-      className="relative p-2 rounded-md text-fg-muted hover:text-fg hover:bg-brand/[0.06] active:scale-90 transition-all duration-150"
+      className={`relative p-2 rounded-md active:scale-90 transition-all duration-150 ${
+        theme === "dark" ? "toggle-sun" : "toggle-moon"
+      }`}
     >
-      {/*
-        key forces a re-mount on every toggle, restarting the entry animation.
-        Sun spins in clockwise (+45°), moon counter-clockwise (−45°) — opposite
-        directions give a sense of which way the day is turning.
-      */}
       <span
         key={theme}
         className={`block ${theme === "dark" ? "sun-appear" : "moon-appear"}`}

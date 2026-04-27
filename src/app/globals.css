@@ -90,6 +90,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ─── Theme toggle state colors ─────────────────────────────────────────── */
+/*
+  Sun = warm amber (the colour of actual sunlight).
+  Moon = cool indigo (the colour of actual moonlight).
+  Each state reads as a semantic cue, not decoration.
+  Classes live outside @layer so they override Tailwind utilities in the cascade.
+*/
+.toggle-sun {
+  color: oklch(78% 0.17 72);
+}
+.toggle-sun:hover {
+  color: oklch(84% 0.19 72);
+  background-color: oklch(78% 0.17 72 / 0.08);
+}
+
+.toggle-moon {
+  color: oklch(54% 0.20 265);
+}
+.toggle-moon:hover {
+  color: oklch(46% 0.22 265);
+  background-color: oklch(54% 0.20 265 / 0.08);
+}
+
 /* ─── Theme toggle icon animations ──────────────────────────────────────── */
 @keyframes sun-appear {
   from { transform: rotate(45deg) scale(0.5); opacity: 0; }

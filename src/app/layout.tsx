@@ -4,6 +4,7 @@ import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { ThemeProvider } from "@/providers/theme-provider";
 import { seoDefaults } from "@/data/site-data";
 
 const inter = Inter({
@@ -45,11 +46,22 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Runs before React hydrates to set theme class and avoid flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('theme');var prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;var dark=s?s==='dark':prefersDark;document.documentElement.classList.add(dark?'dark':'light');}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="flex flex-col min-h-screen bg-bg text-fg antialiased">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ThemeProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

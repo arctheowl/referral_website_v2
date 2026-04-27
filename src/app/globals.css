@@ -18,18 +18,42 @@
   --shadow-btn:  rgba(0, 0, 0, 0.38) 0px 1px 2px;
 }
 
-/* ─── Light mode override ────────────────────────────────────────────────── */
+/* ─── Light mode: system preference (when no manual override) ────────────── */
 @media (prefers-color-scheme: light) {
-  :root {
-    --bg:        oklch(99.5% 0.003 159);  /* near-white, green-warm */
+  :root:not(.dark) {
+    --bg:        oklch(99.5% 0.003 159);
     --bg-card:   oklch(99.5% 0.003 159);
-    --fg:        oklch(10.5% 0.008 159);  /* near-black */
-    --fg-muted:  oklch(46.5% 0.006 159);  /* medium gray */
-    --border:    oklch(0% 0 0 / 0.05);    /* black 5% */
-    --border-md: oklch(0% 0 0 / 0.08);    /* black 8% */
+    --fg:        oklch(10.5% 0.008 159);
+    --fg-muted:  oklch(46.5% 0.006 159);
+    --border:    oklch(0% 0 0 / 0.05);
+    --border-md: oklch(0% 0 0 / 0.08);
     --shadow-card: rgba(0, 0, 0, 0.03) 0px 2px 4px;
     --shadow-btn:  rgba(0, 0, 0, 0.06) 0px 1px 2px;
   }
+}
+
+/* ─── Light mode: manual toggle ──────────────────────────────────────────── */
+html.light {
+  --bg:        oklch(99.5% 0.003 159);
+  --bg-card:   oklch(99.5% 0.003 159);
+  --fg:        oklch(10.5% 0.008 159);
+  --fg-muted:  oklch(46.5% 0.006 159);
+  --border:    oklch(0% 0 0 / 0.05);
+  --border-md: oklch(0% 0 0 / 0.08);
+  --shadow-card: rgba(0, 0, 0, 0.03) 0px 2px 4px;
+  --shadow-btn:  rgba(0, 0, 0, 0.06) 0px 1px 2px;
+}
+
+/* ─── Dark mode: manual toggle (overrides system light preference) ───────── */
+html.dark {
+  --bg:        oklch(10.5% 0.008 159);
+  --bg-card:   oklch(13.8% 0.006 159);
+  --fg:        oklch(93.6% 0.004 159);
+  --fg-muted:  oklch(65.8% 0.005 159);
+  --border:    oklch(100% 0 0 / 0.08);
+  --border-md: oklch(100% 0 0 / 0.13);
+  --shadow-card: rgba(0, 0, 0, 0.38) 0px 2px 4px;
+  --shadow-btn:  rgba(0, 0, 0, 0.38) 0px 1px 2px;
 }
 
 /* ─── Tailwind design tokens ─────────────────────────────────────────────── */

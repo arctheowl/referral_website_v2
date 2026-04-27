@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { navigation, companyInfo } from "@/data/site-data";
 import { LinkButton } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -49,22 +50,26 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Desktop CTA */}
-        <div className="hidden md:block">
+        {/* Desktop CTA + theme toggle */}
+        <div className="hidden md:flex items-center gap-1">
+          <ThemeToggle />
           <LinkButton href={navigation.cta.href} variant="primary" size="sm">
             {navigation.cta.name}
           </LinkButton>
         </div>
 
-        {/* Mobile menu toggle */}
-        <button
-          className="md:hidden p-2 rounded-md text-fg-muted hover:text-fg transition-colors duration-150"
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-        >
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        {/* Mobile: theme toggle + hamburger */}
+        <div className="md:hidden flex items-center gap-1">
+          <ThemeToggle />
+          <button
+            className="p-2 rounded-md text-fg-muted hover:text-fg transition-colors duration-150"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}

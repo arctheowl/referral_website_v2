@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* ─── Dark mode first (default) ─────────────────────────────────────────── */
+:root {
+  --bg: #0d0d0d;
+  --bg-card: #141414;
+  --fg: #ededed;
+  --fg-muted: #a0a0a0;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-md: rgba(255, 255, 255, 0.12);
+  --shadow-card: rgba(0, 0, 0, 0.4) 0px 2px 4px;
+  --shadow-btn: rgba(0, 0, 0, 0.4) 0px 1px 2px;
+}
+
+/* ─── Light mode override ────────────────────────────────────────────────── */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #ffffff;
+    --bg-card: #ffffff;
+    --fg: #0d0d0d;
+    --fg-muted: #666666;
+    --border: rgba(0, 0, 0, 0.05);
+    --border-md: rgba(0, 0, 0, 0.08);
+    --shadow-card: rgba(0, 0, 0, 0.03) 0px 2px 4px;
+    --shadow-btn: rgba(0, 0, 0, 0.06) 0px 1px 2px;
+  }
+}
+
+/* ─── Tailwind design tokens ─────────────────────────────────────────────── */
+@theme inline {
+  /* Adaptive surfaces */
+  --color-bg: var(--bg);
+  --color-bg-card: var(--bg-card);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-border: var(--border);
+  --color-border-md: var(--border-md);
+
+  /* Static brand tokens */
+  --color-brand: #18e299;
+  --color-brand-light: #d4fae8;
+  --color-brand-deep: #0fa76e;
+  --color-near-black: #0d0d0d;
+  --color-body-text: #333333;
+  --color-gray-400: #888888;
+  --color-gray-500: #666666;
+
+  /* Typography */
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+
+  /* Radius */
+  --radius-pill: 9999px;
+  --radius-card: 1rem;
+  --radius-card-lg: 1.5rem;
+}
+
+/* ─── Base styles ────────────────────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Focus ring ─────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #18e299;
+  outline-offset: 2px;
+}

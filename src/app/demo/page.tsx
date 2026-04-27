@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Clock, CheckCircle, MessageSquare } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { CtaSection } from "@/components/sections/cta-section";
@@ -34,30 +35,30 @@ export default function DemoPage() {
   return (
     <div>
       {/* Page hero */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 70% 40% at 50% -5%, rgba(24,226,153,0.08) 0%, transparent 70%)",
-          }}
-        />
-        <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8 py-16 lg:py-24">
-          <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.6px] text-brand mb-4">
-            Book a Demo
-          </p>
-          <h1
-            className="font-sans font-semibold text-fg leading-[1.10] tracking-[-0.8px] mb-5 max-w-3xl"
-            style={{ fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
-          >
-            See what&apos;s possible in 30 minutes
-          </h1>
-          <p className="text-[18px] text-fg-muted leading-relaxed max-w-2xl">
-            Pick a time that works for you. We&apos;ll talk through one of your processes and
-            give you an honest view of what automation or software could realistically achieve.
-            No cost. No commitment. No hard sell.
-          </p>
+      <section className="border-b border-border">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 pt-14 pb-12 lg:pt-20 lg:pb-16">
+          <div className="max-w-2xl">
+            <p className="font-mono text-[12px] font-medium uppercase tracking-[0.6px] text-fg-muted mb-4">
+              Book a Demo
+            </p>
+            <h1
+              className="font-sans font-semibold text-fg leading-[1.10] tracking-[-0.8px] mb-5"
+              style={{ fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
+            >
+              See what&apos;s possible in 30 minutes
+            </h1>
+            <p className="text-[18px] text-fg-muted leading-relaxed mb-8">
+              Pick a time that works for you. We&apos;ll talk through one of your processes and
+              give you an honest view of what automation or software could realistically achieve.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {["30 minutes", "No cost", "No commitment", "Written summary after"].map((tag) => (
+                <span key={tag} className="inline-flex items-center px-3 py-1.5 rounded-pill border border-border text-sm text-fg-muted">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -75,8 +76,8 @@ export default function DemoPage() {
               const Icon = item.icon;
               return (
                 <Card key={item.title}>
-                  <div className="w-9 h-9 rounded-md bg-brand/10 flex items-center justify-center mb-4">
-                    <Icon className="w-5 h-5 text-brand" />
+                  <div className="w-9 h-9 rounded-md bg-fg/[0.06] flex items-center justify-center mb-4">
+                    <Icon className="w-5 h-5 text-fg-muted" />
                   </div>
                   <p className="font-semibold text-fg mb-2">{item.title}</p>
                   <p className="text-sm text-fg-muted leading-relaxed">{item.description}</p>
@@ -99,10 +100,9 @@ export default function DemoPage() {
               data-url={`${process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/SETUP_REQUIRED"}?hide_landing_page_details=1&hide_gdpr_banner=1`}
               style={{ minWidth: "320px", height: "700px" }}
             />
-            <script
-              type="text/javascript"
+            <Script
               src="https://assets.calendly.com/assets/external/widget.js"
-              async
+              strategy="lazyOnload"
             />
           </div>
 

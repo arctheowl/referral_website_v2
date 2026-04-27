@@ -69,27 +69,19 @@ export default function ContactPage() {
 
   return (
     <div>
-      {/* Page hero */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 70% 40% at 50% -5%, rgba(24,226,153,0.08) 0%, transparent 70%)",
-          }}
-        />
-        <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8 py-16 lg:py-24">
-          <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.6px] text-brand mb-4">
+      {/* Page hero — compact, no gradient; form is the content */}
+      <section className="border-b border-border">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 pt-10 pb-8 lg:pt-14 lg:pb-10">
+          <p className="font-mono text-[12px] font-medium uppercase tracking-[0.6px] text-fg-muted mb-3">
             Get in Touch
           </p>
           <h1
-            className="font-sans font-semibold text-fg leading-[1.10] tracking-[-0.8px] mb-5 max-w-2xl"
-            style={{ fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
+            className="font-sans font-semibold text-fg leading-[1.10] tracking-[-0.8px] mb-3 max-w-2xl"
+            style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.25rem)" }}
           >
             Start with a free consultation
           </h1>
-          <p className="text-[18px] text-fg-muted leading-relaxed max-w-xl">
+          <p className="text-[17px] text-fg-muted leading-relaxed max-w-xl">
             Tell us about your business and what you&apos;d like to improve. We&apos;ll get back to
             you within 24 hours.
           </p>

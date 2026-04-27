@@ -1,57 +1,60 @@
 @import "tailwindcss";
 
+/*
+  Palette: OKLCH throughout. All neutrals tinted toward hue 159 (brand green)
+  at chroma 0.006-0.010 — invisible individually, cohesive as a system.
+  Dark mode is the primary render target; light overrides via media query.
+*/
+
 /* ─── Dark mode first (default) ─────────────────────────────────────────── */
 :root {
-  --bg: #0d0d0d;
-  --bg-card: #141414;
-  --fg: #ededed;
-  --fg-muted: #a0a0a0;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-md: rgba(255, 255, 255, 0.12);
-  --shadow-card: rgba(0, 0, 0, 0.4) 0px 2px 4px;
-  --shadow-btn: rgba(0, 0, 0, 0.4) 0px 1px 2px;
+  --bg:        oklch(10.5% 0.008 159);   /* near-black, green-warm */
+  --bg-card:   oklch(13.8% 0.006 159);   /* card surface */
+  --fg:        oklch(93.6% 0.004 159);   /* near-white */
+  --fg-muted:  oklch(65.8% 0.005 159);   /* secondary text */
+  --border:    oklch(100% 0 0 / 0.08);   /* white 8% */
+  --border-md: oklch(100% 0 0 / 0.13);   /* white 13% */
+  --shadow-card: rgba(0, 0, 0, 0.38) 0px 2px 4px;
+  --shadow-btn:  rgba(0, 0, 0, 0.38) 0px 1px 2px;
 }
 
 /* ─── Light mode override ────────────────────────────────────────────────── */
 @media (prefers-color-scheme: light) {
   :root {
-    --bg: #ffffff;
-    --bg-card: #ffffff;
-    --fg: #0d0d0d;
-    --fg-muted: #666666;
-    --border: rgba(0, 0, 0, 0.05);
-    --border-md: rgba(0, 0, 0, 0.08);
+    --bg:        oklch(99.5% 0.003 159);  /* near-white, green-warm */
+    --bg-card:   oklch(99.5% 0.003 159);
+    --fg:        oklch(10.5% 0.008 159);  /* near-black */
+    --fg-muted:  oklch(46.5% 0.006 159);  /* medium gray */
+    --border:    oklch(0% 0 0 / 0.05);    /* black 5% */
+    --border-md: oklch(0% 0 0 / 0.08);    /* black 8% */
     --shadow-card: rgba(0, 0, 0, 0.03) 0px 2px 4px;
-    --shadow-btn: rgba(0, 0, 0, 0.06) 0px 1px 2px;
+    --shadow-btn:  rgba(0, 0, 0, 0.06) 0px 1px 2px;
   }
 }
 
 /* ─── Tailwind design tokens ─────────────────────────────────────────────── */
 @theme inline {
   /* Adaptive surfaces */
-  --color-bg: var(--bg);
-  --color-bg-card: var(--bg-card);
-  --color-fg: var(--fg);
-  --color-fg-muted: var(--fg-muted);
-  --color-border: var(--border);
+  --color-bg:        var(--bg);
+  --color-bg-card:   var(--bg-card);
+  --color-fg:        var(--fg);
+  --color-fg-muted:  var(--fg-muted);
+  --color-border:    var(--border);
   --color-border-md: var(--border-md);
 
-  /* Static brand tokens */
-  --color-brand: #18e299;
-  --color-brand-light: #d4fae8;
-  --color-brand-deep: #0fa76e;
-  --color-near-black: #0d0d0d;
-  --color-body-text: #333333;
-  --color-gray-400: #888888;
-  --color-gray-500: #666666;
+  /* Brand — used only for CTAs, hover states, focus rings, hero accent */
+  --color-brand:       oklch(79.3% 0.177 159);   /* #18E299 */
+  --color-brand-light: oklch(96.5% 0.040 152);   /* #d4fae8 */
+  --color-brand-deep:  oklch(56.4% 0.148 158);   /* #0fa76e */
+  --color-near-black:  oklch(10.5% 0.008 159);   /* #0d0d0d */
 
   /* Typography */
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 
   /* Radius */
-  --radius-pill: 9999px;
-  --radius-card: 1rem;
+  --radius-pill:    9999px;
+  --radius-card:    1rem;
   --radius-card-lg: 1.5rem;
 }
 
@@ -75,6 +78,6 @@ body {
 
 /* ─── Focus ring ─────────────────────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid #18e299;
+  outline: 2px solid oklch(79.3% 0.177 159);
   outline-offset: 2px;
 }

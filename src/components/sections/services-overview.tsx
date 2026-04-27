@@ -3,21 +3,12 @@ import { ArrowRight, Zap, Code, BarChart3, Brain, Link as LinkIcon, ClipboardChe
 import { LinkButton } from "@/components/ui/button";
 import { ctaLinks } from "@/data/site-data";
 
-const iconMap = {
-  ClipboardCheck,
-  Zap,
-  Code,
-  BarChart3,
-  Brain,
-  Link: LinkIcon,
-};
-
 const coreServices = [
-  { id: "automation", icon: "Zap" as const, title: "Process Automation", description: "Remove repetitive admin by connecting systems and automating routine tasks." },
-  { id: "software", icon: "Code" as const, title: "Custom Software Development", description: "When off-the-shelf tools don't fit, we build software around how your team actually works." },
-  { id: "analytics", icon: "BarChart3" as const, title: "Data Analytics & BI", description: "Turn disconnected data into clear dashboards so decisions are based on facts, not guesswork." },
-  { id: "ai", icon: "Brain" as const, title: "AI & Machine Learning", description: "Use AI where it genuinely helps: document handling, smarter forecasting, support workflows." },
-  { id: "api", icon: "Link" as const, title: "API Development", description: "Connect your systems so information moves reliably between tools without manual copying." },
+  { id: "automation", icon: Zap,      title: "Process Automation",              description: "Remove repetitive admin by connecting systems and automating routine tasks." },
+  { id: "software",   icon: Code,     title: "Custom Software Development",     description: "When off-the-shelf tools don't fit, we build software around how your team actually works." },
+  { id: "analytics",  icon: BarChart3, title: "Data Analytics & BI",            description: "Turn disconnected data into clear dashboards so decisions are based on facts, not guesswork." },
+  { id: "ai",         icon: Brain,    title: "AI & Machine Learning",           description: "Use AI where it genuinely helps: document handling, smarter forecasting, support workflows." },
+  { id: "api",        icon: LinkIcon, title: "API Development",                 description: "Connect your systems so information moves reliably between tools without manual copying." },
 ];
 
 export function ServicesOverview() {
@@ -27,7 +18,7 @@ export function ServicesOverview() {
 
         {/* Header */}
         <div className="max-w-2xl mb-12">
-          <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.6px] text-fg-muted mb-4">
+          <p className="font-mono text-[12px] font-medium uppercase tracking-[0.6px] text-fg-muted mb-4">
             What We Do
           </p>
           <h2
@@ -48,8 +39,8 @@ export function ServicesOverview() {
             <div className="grid md:grid-cols-[1fr_auto] gap-6 items-start">
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-9 h-9 rounded-md bg-brand/10 flex items-center justify-center">
-                    <ClipboardCheck className="w-5 h-5 text-brand" />
+                  <div className="w-8 h-8 rounded-md bg-fg/[0.06] flex items-center justify-center flex-shrink-0">
+                    <ClipboardCheck className="w-4 h-4 text-fg-muted" />
                   </div>
                   <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.6px] text-brand">
                     No Cost · No Commitment
@@ -65,7 +56,7 @@ export function ServicesOverview() {
                 <ul className="flex flex-wrap gap-x-6 gap-y-1.5">
                   {["On-site process walkthrough", "Concrete improvement recommendations", "No-obligation written summary"].map((item) => (
                     <li key={item} className="flex items-center gap-2 text-sm text-fg-muted">
-                      <span className="w-1.5 h-1.5 rounded-full bg-brand flex-shrink-0" aria-hidden="true" />
+                      <span className="w-1 h-1 rounded-full bg-fg-muted/40 flex-shrink-0" aria-hidden="true" />
                       {item}
                     </li>
                   ))}
@@ -84,15 +75,15 @@ export function ServicesOverview() {
         {/* Core services list */}
         <div className="border-t border-border">
           {coreServices.map((service) => {
-            const Icon = iconMap[service.icon];
+            const Icon = service.icon;
             return (
               <Link
                 key={service.id}
                 href={`/services#${service.id}`}
-                className="group flex items-center gap-5 py-5 border-b border-border hover:bg-bg-card/50 px-3 -mx-3 rounded-md transition-colors duration-150"
+                className="group flex items-center gap-5 py-5 border-b border-border hover:bg-fg/[0.02] px-3 -mx-3 rounded-md transition-colors duration-150"
               >
-                <div className="w-9 h-9 rounded-md bg-brand/10 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-5 h-5 text-brand" />
+                <div className="w-8 h-8 rounded-md bg-fg/[0.06] flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-4 h-4 text-fg-muted" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-fg group-hover:text-brand transition-colors duration-150 leading-snug">

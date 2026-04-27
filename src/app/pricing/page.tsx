@@ -15,33 +15,38 @@ export default function PricingPage() {
   return (
     <div>
       {/* Page hero */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 70% 40% at 50% -5%, rgba(24,226,153,0.08) 0%, transparent 70%)",
-          }}
-        />
-        <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8 py-16 lg:py-24">
-          <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.6px] text-brand mb-4">
-            Pricing
-          </p>
-          <h1
-            className="font-sans font-semibold text-fg leading-[1.10] tracking-[-0.8px] mb-5 max-w-3xl"
-            style={{ fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
-          >
-            Process Automation Pricing
-          </h1>
-          <p className="text-[18px] text-fg-muted leading-relaxed max-w-2xl mb-8">
-            Clear, fixed-price automation services tailored to your process complexity — from quick
-            workflow wins to end-to-end systems automation.
-          </p>
-          <LinkButton href={ctaLinks.contact} variant="primary">
-            Book Free Consultation
-            <ArrowRight className="ml-2 w-4 h-4" />
-          </LinkButton>
+      <section className="border-b border-border">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 pt-14 pb-12 lg:pt-20 lg:pb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 lg:gap-20 items-end">
+            <div>
+              <p className="font-mono text-[12px] font-medium uppercase tracking-[0.6px] text-fg-muted mb-4">
+                Pricing
+              </p>
+              <h1
+                className="font-sans font-semibold text-fg leading-[1.10] tracking-[-0.8px] mb-5"
+                style={{ fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
+              >
+                Process Automation Pricing
+              </h1>
+              <p className="text-[18px] text-fg-muted leading-relaxed mb-8">
+                Clear, fixed-price automation services tailored to your process complexity. From quick
+                workflow wins to end-to-end systems automation.
+              </p>
+              <LinkButton href={ctaLinks.contact} variant="primary">
+                Book Free Consultation
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </LinkButton>
+            </div>
+            <div className="hidden lg:block pb-2">
+              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.6px] text-fg-muted/50 mb-2">
+                Starting from
+              </p>
+              <p className="font-sans font-semibold text-fg leading-none tracking-[-2px] mb-3" style={{ fontSize: "clamp(3rem, 5vw, 4rem)" }}>
+                £450
+              </p>
+              <p className="text-sm text-fg-muted">Fixed price. No day rates. No surprise invoices.</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -58,8 +63,8 @@ export default function PricingPage() {
             {howItWorks.map((step, i) => (
               <div key={step.title} className="relative">
                 <Card>
-                  <div className="w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center mb-4">
-                    <span className="font-mono text-[12px] font-semibold text-brand">{i + 1}</span>
+                  <div className="w-8 h-8 rounded-full bg-fg/[0.06] flex items-center justify-center mb-4">
+                    <span className="font-mono text-[12px] font-semibold text-fg-muted">{i + 1}</span>
                   </div>
                   <p className="font-semibold text-fg mb-2">{step.title}</p>
                   <p className="text-sm text-fg-muted leading-relaxed">{step.description}</p>
@@ -108,7 +113,7 @@ export default function PricingPage() {
                   <ul className="space-y-2">
                     {tier.examples.map((ex) => (
                       <li key={ex} className="flex items-start gap-2 text-sm text-fg-muted">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand/60 mt-1.5 flex-shrink-0" aria-hidden="true" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-fg-muted/40 mt-1.5 flex-shrink-0" aria-hidden="true" />
                         {ex}
                       </li>
                     ))}
@@ -122,7 +127,7 @@ export default function PricingPage() {
                   <ul className="space-y-2">
                     {tier.included.map((item) => (
                       <li key={item} className="flex items-start gap-2 text-sm text-fg-muted">
-                        <CheckCircle className="w-4 h-4 text-brand mt-0.5 flex-shrink-0" />
+                        <CheckCircle className="w-4 h-4 text-fg-muted mt-0.5 flex-shrink-0" />
                         {item}
                       </li>
                     ))}

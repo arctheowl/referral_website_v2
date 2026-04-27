@@ -5,13 +5,13 @@ import { ctaLinks } from "@/data/site-data";
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
-      {/* Atmospheric gradient — green wash from top */}
+      {/* Atmospheric gradient — subtle green wash, dark mode reads as cold glow, light as warmth */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(24,226,153,0.12) 0%, transparent 70%)",
+            "radial-gradient(ellipse 100% 60% at 50% -20%, oklch(79.3% 0.177 159 / 0.09) 0%, transparent 68%)",
         }}
       />
 
@@ -20,7 +20,7 @@ export function Hero() {
 
           {/* Left: headline + CTAs */}
           <div>
-            <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.6px] text-brand mb-5">
+            <p className="font-mono text-[12px] font-medium uppercase tracking-[0.6px] text-fg-muted mb-5">
               IT Consultancy · Andover, Hampshire
             </p>
 
@@ -55,17 +55,17 @@ export function Hero() {
           {/* Right: evaluation offer card */}
           <div className="hidden lg:block">
             <div className="relative bg-bg-card rounded-card-lg border border-border overflow-hidden shadow-[var(--shadow-card)]">
-              {/* Green top accent bar */}
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-brand" />
+              {/* Brand accent bar — kept here because it marks the featured offer */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-brand" />
               <div className="p-8">
                 <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.6px] text-brand mb-4">
                   No Cost · No Commitment
                 </p>
                 <div className="flex items-start gap-3 mb-4">
-                  <div className="w-9 h-9 rounded-md bg-brand/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <ClipboardCheck className="w-5 h-5 text-brand" />
+                  <div className="w-8 h-8 rounded-md bg-fg/[0.06] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <ClipboardCheck className="w-4 h-4 text-fg-muted" />
                   </div>
-                  <h2 className="font-sans font-semibold text-[20px] leading-snug tracking-[-0.2px] text-fg">
+                  <h2 className="font-sans font-semibold text-[19px] leading-snug tracking-[-0.2px] text-fg">
                     Free On-Site Business Evaluation
                   </h2>
                 </div>
@@ -81,7 +81,7 @@ export function Hero() {
                     "No hard sell, ever",
                   ].map((item) => (
                     <li key={item} className="flex items-center gap-2.5 text-sm text-fg-muted">
-                      <span className="w-1.5 h-1.5 rounded-full bg-brand flex-shrink-0" aria-hidden="true" />
+                      <span className="w-1 h-1 rounded-full bg-fg-muted/40 flex-shrink-0" aria-hidden="true" />
                       {item}
                     </li>
                   ))}

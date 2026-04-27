@@ -90,6 +90,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ─── Theme toggle icon animations ──────────────────────────────────────── */
+@keyframes sun-appear {
+  from { transform: rotate(45deg) scale(0.5); opacity: 0; }
+  to   { transform: rotate(0deg)  scale(1);   opacity: 1; }
+}
+@keyframes moon-appear {
+  from { transform: rotate(-45deg) scale(0.5); opacity: 0; }
+  to   { transform: rotate(0deg)   scale(1);   opacity: 1; }
+}
+
+.sun-appear  { animation: sun-appear  0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.moon-appear { animation: moon-appear 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
 /* ─── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,

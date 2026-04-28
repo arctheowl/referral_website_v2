@@ -82,8 +82,8 @@ export default function ContactPage() {
             Start with a free consultation
           </h1>
           <p className="text-[17px] text-fg-muted leading-relaxed max-w-xl">
-            Tell us about your business and what you&apos;d like to improve. We&apos;ll get back to
-            you within 24 hours.
+            Tell us about your business and the process you&apos;d like to improve. We&apos;ll
+            respond within 24 hours.
           </p>
         </div>
       </section>
@@ -291,7 +291,7 @@ export default function ContactPage() {
 
               <div>
                 <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.6px] text-fg-muted mb-4">
-                  Prefer to Book a Call?
+                  Prefer to Book a Call
                 </p>
                 <LinkButton href={ctaLinks.demo} variant="secondary" className="w-full justify-center">
                   Book a Demo

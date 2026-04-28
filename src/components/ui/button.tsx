@@ -9,11 +9,11 @@ const base =
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-near-black text-white rounded-pill px-6 py-2 text-[15px] shadow-[var(--shadow-btn)] hover:opacity-90",
+    "bg-brand text-white rounded-pill px-6 py-2 text-[15px] hover:opacity-90",
   secondary:
-    "bg-bg-card text-fg border border-border-md rounded-pill px-6 py-2 text-[15px] hover:opacity-90",
+    "border border-fg text-fg bg-transparent rounded-pill px-6 py-2 text-[15px] hover:bg-fg/[0.06] transition-colors duration-150",
   brand:
-    "bg-brand text-near-black rounded-pill px-6 py-2 text-[15px] shadow-[var(--shadow-btn)] hover:opacity-90",
+    "bg-brand text-white rounded-pill px-6 py-2 text-[15px] hover:opacity-90",
 };
 
 const sizes: Record<Size, string> = {

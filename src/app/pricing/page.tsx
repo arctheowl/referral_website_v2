@@ -28,8 +28,8 @@ export default function PricingPage() {
               Process Automation Pricing
             </h1>
             <p className="text-[18px] text-fg-muted leading-relaxed mb-8">
-              Clear, fixed-price automation services tailored to your process complexity. From quick
-              workflow wins to end-to-end systems automation.
+              Clear, fixed-price services tailored to your process complexity. From a single
+              workflow fix to end-to-end automation across your whole business.
             </p>
             <LinkButton href={ctaLinks.contact} variant="primary">
               Book Free Consultation

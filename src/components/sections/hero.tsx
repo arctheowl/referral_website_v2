@@ -18,7 +18,7 @@ export function Hero() {
               className="font-sans font-semibold text-fg leading-[1.15] tracking-[-1.28px] mb-6"
               style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
             >
-              Practical Software
+              Practical IT
               <br />
               for Growing
               <br />
@@ -26,9 +26,9 @@ export function Hero() {
             </h1>
 
             <p className="text-[18px] text-fg-muted leading-relaxed max-w-lg mb-10">
-              We work with business owners and teams who are tired of manual
-              workarounds. We review how things are done today, then build tools
-              and automations that save time and reduce errors.
+              We help small businesses spend less time on manual, repetitive
+              work. We review how your team operates, then build practical
+              automations and tools that save real hours.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -60,9 +60,9 @@ export function Hero() {
                   </h2>
                 </div>
                 <p className="text-sm text-fg-muted leading-relaxed mb-6">
-                  We visit your workplace, map your current processes, and
-                  identify exactly where time and money are lost — with a
-                  written plan to fix it.
+                  We visit your workplace, review how your team currently works,
+                  and give you a written plan showing where time and money can
+                  be saved.
                 </p>
                 <ul className="space-y-2.5 mb-7">
                   {[

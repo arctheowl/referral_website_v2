@@ -16,8 +16,8 @@ const services = [
     id: "automation",
     icon: Zap,
     title: "Process Automation",
-    description: "Remove repetitive admin by connecting systems and automating routine tasks. Stop re-entering the same data across different tools.",
-    detail: "If your team spends time copying information between spreadsheets, manually sending recurring emails, or running the same report by hand each week — that's automatable. We map the process, select the right tooling, and build a workflow that runs itself.",
+    description: "Stop re-entering the same data. We connect your systems and automate routine tasks so your team can focus on real work.",
+    detail: "If your team spends time copying information between spreadsheets, sending the same recurring emails by hand, or running weekly reports manually — that's automatable. We map the process, choose the right tooling, and build a workflow that runs itself.",
     examples: [
       "Auto-send emails when a form is submitted",
       "Move and organise files based on set rules",
@@ -29,8 +29,8 @@ const services = [
     id: "software",
     icon: Code,
     title: "Custom Software Development",
-    description: "When off-the-shelf tools don't fit, we build software around how your team actually works.",
-    detail: "Generic software forces you to adapt your processes to the tool. We do it the other way: understand how your business operates, then build something that fits exactly. From simple internal tools to full client-facing applications.",
+    description: "When off-the-shelf tools don't fit your process, we build software that does — around how your team actually works.",
+    detail: "Generic software makes you adapt to it. We start by understanding how your business operates and build something that fits exactly — whether that's a simple internal tool or a full client-facing application.",
     examples: [
       "Internal management dashboards",
       "Customer or client portals",
@@ -42,8 +42,8 @@ const services = [
     id: "analytics",
     icon: BarChart3,
     title: "Data Analytics & Business Intelligence",
-    description: "Turn disconnected spreadsheets and systems into clear dashboards so decisions are based on facts, not guesswork.",
-    detail: "Most businesses have more data than they realise, spread across spreadsheets, email, accounting software, and CRMs. We pull it together into a single view that updates automatically, so you always know where things stand.",
+    description: "Pull your data into one place and keep it current. Clear dashboards so decisions are based on facts, not guesswork.",
+    detail: "Most businesses have more data than they realise, scattered across spreadsheets, email, accounting software, and CRMs. We consolidate it into a single view that updates automatically, so you always know where things stand.",
     examples: [
       "Live sales and revenue dashboards",
       "Automated weekly or monthly reports",
@@ -55,8 +55,8 @@ const services = [
     id: "ai",
     icon: Brain,
     title: "AI & Machine Learning",
-    description: "Use AI where it genuinely helps: document handling, smarter forecasting, and support workflow automation.",
-    detail: "We're honest about what AI can and can't do. Where it adds real value — extracting information from documents, classifying incoming requests, or improving forecast accuracy — we build it in. Where it wouldn't add value, we'll tell you.",
+    description: "Practical AI for document handling, smarter forecasting, and support triage — applied where it genuinely adds value.",
+    detail: "We're direct about where AI helps and where it doesn't. Where it adds real value — extracting information from documents, classifying incoming requests, improving forecast accuracy — we build it in. Where it wouldn't, we'll tell you.",
     examples: [
       "Automated document extraction and classification",
       "Intelligent email routing and triage",
@@ -68,8 +68,8 @@ const services = [
     id: "api",
     icon: LinkIcon,
     title: "API Development & Integration",
-    description: "Connect your systems so information moves reliably between tools without manual copying or export/import cycles.",
-    detail: "Most modern software has an API. We build the connections between your tools so data flows automatically — whether that's pulling orders from your e-commerce platform into your accounting software, or syncing a CRM with your email marketing tool.",
+    description: "Connect your tools so data flows automatically — no manual exports, no copying between systems.",
+    detail: "We build the connections between your systems so information moves reliably on its own — whether that's pulling orders from your e-commerce platform into your accounting software, or syncing a CRM with your email marketing tool.",
     examples: [
       "Connect CRM with email and calendar tools",
       "Sync e-commerce orders with accounting software",
@@ -123,9 +123,9 @@ export default function ServicesPage() {
               Free On-Site Business Evaluation
             </h2>
             <p className="text-fg-muted leading-relaxed max-w-2xl mb-6">
-              We visit your workplace, review how your team currently operates, and provide a
-              concrete written plan for where we can save you time and money. No cost. No
-              obligation to proceed. No hard sell.
+              We visit your workplace, review how your team currently works, and give you a
+              written plan showing where time and money can be saved. No cost, no obligation,
+              no hard sell.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
               {[

@@ -4,11 +4,11 @@ import { LinkButton } from "@/components/ui/button";
 import { ctaLinks } from "@/data/site-data";
 
 const coreServices = [
-  { id: "automation", icon: Zap,      title: "Process Automation",              description: "Remove repetitive admin by connecting systems and automating routine tasks." },
-  { id: "software",   icon: Code,     title: "Custom Software Development",     description: "When off-the-shelf tools don't fit, we build software around how your team actually works." },
-  { id: "analytics",  icon: BarChart3, title: "Data Analytics & BI",            description: "Turn disconnected data into clear dashboards so decisions are based on facts, not guesswork." },
-  { id: "ai",         icon: Brain,    title: "AI & Machine Learning",           description: "Use AI where it genuinely helps: document handling, smarter forecasting, support workflows." },
-  { id: "api",        icon: LinkIcon, title: "API Development",                 description: "Connect your systems so information moves reliably between tools without manual copying." },
+  { id: "automation", icon: Zap,      title: "Process Automation",              description: "Stop re-entering the same data. We connect your systems and automate routine tasks so your team can focus on real work." },
+  { id: "software",   icon: Code,     title: "Custom Software Development",     description: "When off-the-shelf tools don't fit your process, we build software that does — around how your team actually works." },
+  { id: "analytics",  icon: BarChart3, title: "Data Analytics & BI",            description: "Pull your data into one place and keep it current. Clear dashboards so decisions are based on facts, not guesswork." },
+  { id: "ai",         icon: Brain,    title: "AI & Machine Learning",           description: "Practical AI for document handling, smarter forecasting, and support triage — applied where it genuinely adds value." },
+  { id: "api",        icon: LinkIcon, title: "API Development",                 description: "Connect your tools so data flows automatically — no manual exports, no copying between systems." },
 ];
 
 export function ServicesOverview() {
@@ -50,8 +50,8 @@ export function ServicesOverview() {
                   Free On-Site Business Evaluation
                 </h3>
                 <p className="text-fg-muted leading-relaxed max-w-2xl mb-4">
-                  We visit your workplace, review how your team currently operates, and provide a concrete plan for
-                  where we can save you time and money — at no cost.
+                  We visit your workplace, review how your team currently works, and give you a written plan
+                  showing where time and money can be saved — at no cost.
                 </p>
                 <ul className="flex flex-wrap gap-x-6 gap-y-1.5">
                   {["On-site process walkthrough", "Concrete improvement recommendations", "No-obligation written summary"].map((item) => (
@@ -63,7 +63,7 @@ export function ServicesOverview() {
                 </ul>
               </div>
               <div className="flex-shrink-0">
-                <span className="inline-flex items-center gap-2 bg-brand text-near-black text-sm font-semibold px-5 py-3 rounded-pill group-hover:gap-3 transition-all duration-150">
+                <span className="inline-flex items-center gap-2 bg-brand text-white text-sm font-semibold px-5 py-3 rounded-pill group-hover:gap-3 transition-all duration-150">
                   Book Free Visit
                   <ArrowRight className="w-4 h-4" />
                 </span>
@@ -102,7 +102,7 @@ export function ServicesOverview() {
           <div>
             <p className="font-semibold text-fg mb-1">Not sure where to start?</p>
             <p className="text-sm text-fg-muted">
-              We will visit your site and show you exactly what is possible.
+              We&apos;ll visit your workplace and show you exactly what&apos;s possible.
             </p>
           </div>
           <LinkButton href={ctaLinks.contact} variant="primary" className="flex-shrink-0">

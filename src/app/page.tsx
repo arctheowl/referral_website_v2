@@ -8,8 +8,8 @@ export default function HomePage() {
       <Hero />
       <ServicesOverview />
       <CtaSection
-        headline="Ready to stop doing things the hard way?"
-        subtext="Book a free, no-obligation consultation and we'll show you exactly where your business can save time."
+        headline="Find out where your business is losing time."
+        subtext="Book a free consultation — no obligation. We'll show you exactly where the opportunities are."
         primaryLabel="Book Free Consultation"
         primaryHref="/contact"
         secondaryLabel="See Pricing"

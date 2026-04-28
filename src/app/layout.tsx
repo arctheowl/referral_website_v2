@@ -27,6 +27,10 @@ export const metadata: Metadata = {
   },
   description: seoDefaults.description,
   metadataBase: new URL(seoDefaults.url),
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+  },
   openGraph: {
     type: "website",
     siteName: seoDefaults.siteName,

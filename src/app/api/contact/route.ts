@@ -32,30 +32,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
     }
 
-    // Sync contact to Resend audience if configured
-    const resendApiKey = process.env.RESEND_API_KEY;
+    // Add submitter to Resend audience
     const audienceId = process.env.RESEND_AUDIENCE_ID;
-
-    if (resendApiKey && audienceId) {
-      try {
-        const resend = new Resend(resendApiKey);
-        const contact = await resend.contacts.create({
-          audienceId,
-          email,
-          firstName,
-          lastName,
-          unsubscribed: false,
-        });
-        if (contact.data?.id) {
-          await resend.events.send({
-            event: "form_submit",
-            contactId: contact.data.id,
-            payload: { company: company || null, service: service || null, message },
-          });
-        }
-      } catch (err) {
-        console.error("Resend audience sync failed:", err);
-      }
+    if (audienceId) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const { error: contactError } = await resend.contacts.create({
+        audienceId,
+        email,
+        firstName,
+        lastName,
+        unsubscribed: false,
+        properties: {
+          ...(company && { company }),
+          ...(service && { service }),
+          message,
+        },
+      });
+      if (contactError) console.error("Resend contact creation failed:", contactError);
     }
 
     // Send notification to owner + welcome email to visitor

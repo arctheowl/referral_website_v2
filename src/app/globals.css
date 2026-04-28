@@ -98,15 +98,6 @@ h1, h2 {
   font-weight: 300;
 }
 
-/*
-  Brand button: IBM Blue 60 background needs white text.
-  The brand variant uses text-near-black (#161616) which has poor
-  contrast against Blue 60 — this selector overrides it.
-*/
-.bg-brand.text-near-black {
-  color: #ffffff;
-}
-
 /* ─── Header: IBM dark masthead — permanent ──────────────────────────────── */
 header {
   background-color: #161616;

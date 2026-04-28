@@ -36,7 +36,7 @@ export function Footer() {
             </p>
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
-                <li key={link.href}>
+                <li key={link.name}>
                   <Link
                     href={link.href}
                     className="text-sm text-fg-muted hover:text-fg transition-colors duration-150"
@@ -55,7 +55,7 @@ export function Footer() {
             </p>
             <ul className="space-y-2">
               {footerLinks.services.map((link) => (
-                <li key={link.href}>
+                <li key={link.name}>
                   <Link
                     href={link.href}
                     className="text-sm text-fg-muted hover:text-fg transition-colors duration-150"
@@ -74,7 +74,7 @@ export function Footer() {
             </p>
             <ul className="space-y-2">
               {footerLinks.getStarted.map((link) => (
-                <li key={link.href}>
+                <li key={link.name}>
                   <Link
                     href={link.href}
                     className="text-sm text-fg-muted hover:text-fg transition-colors duration-150"

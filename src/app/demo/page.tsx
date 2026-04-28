@@ -15,19 +15,19 @@ const whatToExpect = [
     icon: Clock,
     title: "30 minutes",
     description:
-      "The call is capped at 30 minutes. We respect your time and keep it focused.",
+      "The call is capped at 30 minutes. We keep it focused and respect your time.",
   },
   {
     icon: MessageSquare,
-    title: "Talk through one process",
+    title: "Walk through one process",
     description:
-      "Come with one manual or repetitive process in mind. We'll walk through it together and identify practical improvements.",
+      "Have one manual or repetitive process in mind. We'll work through it together and identify what's realistically automatable.",
   },
   {
     icon: CheckCircle,
-    title: "Written summary sent after",
+    title: "Written summary after",
     description:
-      "We send a short written summary of what we discussed and any recommendations within 24 hours.",
+      "We send a short written summary of what we covered and any recommendations — within 24 hours of the call.",
   },
 ];
 
@@ -97,7 +97,7 @@ export default function DemoPage() {
             {/* Calendly inline widget placeholder */}
             <div
               className="calendly-inline-widget w-full"
-              data-url={`${process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/SETUP_REQUIRED"}?hide_landing_page_details=1&hide_gdpr_banner=1`}
+              data-url={`${process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/SETUP_REQUIRED"}?hide_event_type_details=1&hide_gdpr_banner=1`}
               style={{ minWidth: "320px", height: "700px" }}
             />
             <Script
@@ -119,8 +119,8 @@ export default function DemoPage() {
       </section>
 
       <CtaSection
-        headline="Prefer to send a message first?"
-        subtext="Use the contact form and we'll get back to you within 24 hours to arrange a convenient time."
+        headline="Rather send a message?"
+        subtext="Use the contact form and we'll get back to you within 24 hours to arrange a time."
         primaryLabel="Send a Message"
         primaryHref="/contact"
       />

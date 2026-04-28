@@ -10,24 +10,24 @@ export const metadata: Metadata = {
 
 const values = [
   {
-    title: "Lead with the problem, not the technology",
+    title: "Start with the problem, not the technology",
     description:
-      "The client's pain is manual drudgery. We name it before naming the solution. Abstract words like 'digital transformation' mean nothing to an office manager; 'your team spending three hours re-entering the same data' does.",
+      "We understand what is actually costing your team time before recommending anything. Saying 'your team spends three hours re-entering the same data' is more useful than any product pitch.",
   },
   {
-    title: "Expert confidence without jargon",
+    title: "Plain language, not technical jargon",
     description:
-      "We speak in business outcomes — time saved, errors eliminated, staff freed up — rather than stack choices or technical capabilities. Our clients are not technical, and they shouldn't need to be.",
+      "We talk about time saved, errors eliminated, and staff freed up — not about tech stacks or platform capabilities. You should not need a technical background to understand what we are proposing.",
   },
   {
-    title: "Concrete over abstract",
+    title: "Specific commitments, not vague promises",
     description:
-      "Every claim is grounded. Specific services, specific outcomes, specific steps. Vague aspiration erodes trust with business owners who've heard vendor promises before.",
+      "Every proposal comes with a defined scope, a fixed price, and a clear delivery timeline. Business owners have heard enough open-ended vendor promises — we do not make them.",
   },
   {
-    title: "Earned trust over performed modernity",
+    title: "Transparent process, real contact",
     description:
-      "Trust signals matter more than visual novelty. Clear services, a transparent process, a real location, and direct contact matter more than trend-chasing. We're a firm that has done this before.",
+      "We are a local consultancy with a real address and direct phone number. Clear services, honest pricing, and a post-delivery support window. No disappearing after the handover.",
   },
 ];
 
@@ -64,17 +64,17 @@ export default function AboutPage() {
                 className="font-sans font-semibold text-fg leading-[1.15] tracking-[-0.24px] mb-5"
                 style={{ fontSize: "clamp(1.5rem, 2.5vw, 1.75rem)" }}
               >
-                Most businesses have never invested in bespoke software. Not because they don't need it, but because they don't know where to start.
+                Most businesses are running on manual workarounds that have never been fixed — not because they accept it, but because no one has offered a practical way in.
               </h2>
               <p className="text-fg-muted leading-relaxed mb-4">
-                We work with business owners and office managers who watch their teams spend hours on manual,
-                repetitive processes: spreadsheets copied row by row, paper forms re-keyed into systems,
-                multi-step tasks that exist only because no one has built a better way.
+                We work with business owners and office managers whose teams spend hours on repetitive work:
+                spreadsheets copied row by row, paper forms re-keyed into systems, multi-step tasks that
+                exist only because no one has built a better way.
               </p>
               <p className="text-fg-muted leading-relaxed">
-                Rapid Reports exists to be the firm that fixes that. Not with grand promises about digital
-                transformation, but with practical tools and automations that save real hours and reduce
-                real errors — delivered by people you can actually talk to.
+                Rapid Reports exists to fix that. Not with grand promises about transformation, but with
+                practical tools and automations that save real hours and reduce real errors — built by
+                people you can actually talk to.
               </p>
             </div>
             <div>
@@ -85,7 +85,7 @@ export default function AboutPage() {
                 {[
                   { step: "01", title: "Start with a free evaluation", description: "We visit your workplace and map your current processes before recommending anything. No cost, no obligation." },
                   { step: "02", title: "Scope a fixed-price solution", description: "We propose a specific scope of work with a fixed price. No day-rate ambiguity, no surprise invoices." },
-                  { step: "03", title: "Build, test, hand over", description: "We build the solution against your real data, test it thoroughly, and hand it over with documentation your team can use." },
+                  { step: "03", title: "Build, test, handover", description: "We build the solution against your real data, test it thoroughly, and hand it over with documentation your team can use from day one." },
                   { step: "04", title: "Stay on hand", description: "Every project comes with a post-delivery support window. We don't disappear after the handover." },
                 ].map((item) => (
                   <div key={item.step} className="flex gap-4">
@@ -115,7 +115,7 @@ export default function AboutPage() {
               className="font-sans font-semibold text-fg leading-[1.10] tracking-[-0.8px]"
               style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
             >
-              Our Design Principles
+              Our Principles
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

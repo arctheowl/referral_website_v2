@@ -5,7 +5,7 @@ export const companyInfo = {
   shortName: "RR",
   tagline: "Practical IT for Growing Businesses",
   description:
-    "IT consultancy based in Andover, Hampshire. We help business owners and teams reduce manual work through process automation, custom software, and data tools.",
+    "IT consultancy based in Andover, Hampshire. We help small and mid-sized businesses reduce the time their teams spend on manual, repetitive work — through process automation, custom software, and data tools.",
   website: "https://rapidreports.co.uk",
   email: "lidevlin@rapidreports.org",
   phone: "07548 859133",
@@ -65,7 +65,7 @@ export const services = [
     icon: "ClipboardCheck",
     title: "Free On-Site Business Evaluation",
     description:
-      "We visit your workplace, map your current processes, and give you a written plan identifying exactly where time and money are being lost — at no cost and with no obligation.",
+      "We visit your workplace, review how your team currently works, and give you a written plan showing where time and money can be saved — at no cost, no obligation.",
     highlights: [
       "On-site process walkthrough",
       "Written improvement plan",
@@ -79,35 +79,35 @@ export const services = [
     icon: "Zap",
     title: "Process Automation",
     description:
-      "Remove repetitive admin by connecting systems and automating routine tasks. Stop re-entering the same data.",
+      "Stop re-entering the same data. We connect your systems and automate routine tasks so your team can focus on real work.",
   },
   {
     id: "software",
     icon: "Code",
     title: "Custom Software Development",
     description:
-      "When off-the-shelf tools don't fit, we build software around how your team actually works.",
+      "When off-the-shelf tools don't fit your process, we build software that does — around how your team actually works.",
   },
   {
     id: "analytics",
     icon: "BarChart3",
     title: "Data Analytics & Business Intelligence",
     description:
-      "Turn disconnected spreadsheets into clear dashboards so decisions are based on facts, not guesswork.",
+      "Pull your data into one place and keep it current. Clear dashboards so decisions are based on facts, not guesswork.",
   },
   {
     id: "ai",
     icon: "Brain",
     title: "AI & Machine Learning",
     description:
-      "Use AI where it genuinely helps: document handling, smarter forecasting, and support workflow automation.",
+      "Practical AI for document handling, smarter forecasting, and support triage — applied where it genuinely adds value.",
   },
   {
     id: "api",
     icon: "Link",
     title: "API Development & Integration",
     description:
-      "Connect your systems so information moves reliably between tools without manual copying or export/import cycles.",
+      "Connect your tools so data flows automatically — no manual exports, no copying between systems.",
   },
 ];
 
@@ -190,24 +190,23 @@ export const addOns = [
 export const howItWorks = [
   {
     title: "Free Consultation",
-    description: "We look at your process together. No cost, no commitment.",
+    description: "We review one of your processes together and identify what's automatable. No cost, no commitment.",
   },
   {
     title: "Proposal",
-    description: "We send a fixed-price quote based on your specific needs. No surprise costs.",
+    description: "You receive a fixed-price quote scoped to your exact requirements. No day rates, no surprise invoices.",
   },
   {
     title: "Build",
-    description: "We build, test, and refine the automation using your real data.",
+    description: "We build, test, and refine the solution using your real data and workflows.",
   },
   {
     title: "Handover",
-    description:
-      "You get a full walkthrough and documentation so your team is confident using it.",
+    description: "You receive a full walkthrough and written documentation so your team can use it from day one.",
   },
   {
     title: "Support",
-    description: "We stay on hand during the support window to handle any issues.",
+    description: "We remain available during the support window to resolve any issues that come up.",
   },
 ];
 
@@ -215,17 +214,17 @@ export const pricingFaqs = [
   {
     question: "Do I need to buy any software?",
     answer:
-      "Sometimes, yes, depending on the tools involved. We always flag any costs upfront in the proposal. Many automations can be built using tools you already have, or free-tier software.",
+      "Sometimes, depending on the tools involved. We flag any third-party costs in the proposal before you commit. Many automations can be built using software you already have, or free-tier tools.",
   },
   {
     question: "What if my process changes after you have built it?",
     answer:
-      "Small changes within the support window are covered. Larger changes are quoted separately — usually a fraction of the original project cost.",
+      "Minor changes within the support window are covered at no extra cost. Larger changes are quoted separately — typically a fraction of the original project cost.",
   },
   {
     question: "What types of businesses do you work with?",
     answer:
-      "Any sector. If your team spends one or more hours a week on a repetitive task, there is a good chance automation can reduce that significantly.",
+      "Any sector. If your team spends meaningful time each week on a repetitive task, there is a good chance automation can reduce that significantly.",
   },
   {
     question: "How long does a project take?",
@@ -264,8 +263,8 @@ export const serviceOptions = [
 
 export const seoDefaults = {
   siteName: "Rapid Reports",
-  title: "Rapid Reports — IT Consultancy, Andover Hampshire",
+  title: "Rapid Reports — IT Consultancy, Andover, Hampshire",
   description:
-    "Practical IT consultancy for small and mid-sized businesses. Process automation, custom software, and data analytics — starting with a free on-site business evaluation.",
+    "IT consultancy for small and mid-sized businesses. Process automation, custom software, and data analytics — starting with a free on-site evaluation.",
   url: "https://rapidreports.co.uk",
 };

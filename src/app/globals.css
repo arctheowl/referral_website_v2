@@ -141,3 +141,107 @@ body {
   outline: 2px solid oklch(79.3% 0.177 159);
   outline-offset: 2px;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   IBM Carbon Design Override  (html.design-ibm)
+   Non-layered rules here win over Tailwind's @layer utilities by cascade.
+   Covers: IBM gray palette, IBM Plex fonts, 0px radius, IBM Blue 60 brand,
+   always-dark header/footer, and light-weight display headings.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── IBM light palette (default for IBM Carbon) ──────────────────────────── */
+html.design-ibm:not(.dark) {
+  --bg:          #ffffff;
+  --bg-card:     #f4f4f4;
+  --fg:          #161616;
+  --fg-muted:    #525252;
+  --border:      #c6c6c6;
+  --border-md:   #e0e0e0;
+  --shadow-card: none;
+  --shadow-btn:  none;
+}
+
+/* ── IBM dark palette (Gray 100 theme) ───────────────────────────────────── */
+html.design-ibm.dark {
+  --bg:          #161616;
+  --bg-card:     #262626;
+  --fg:          #f4f4f4;
+  --fg-muted:    #c6c6c6;
+  --border:      #393939;
+  --border-md:   #525252;
+  --shadow-card: none;
+  --shadow-btn:  none;
+}
+
+/* ── IBM Plex Sans for body copy ─────────────────────────────────────────── */
+html.design-ibm body {
+  font-family: var(--font-ibm-plex-sans, 'IBM Plex Sans'), 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+/* IBM Plex Mono replaces Geist Mono for technical labels */
+html.design-ibm .font-mono {
+  font-family: var(--font-ibm-plex-mono, 'IBM Plex Mono'), Menlo, 'Courier New', monospace;
+}
+
+/*
+  Light display weight — Carbon's signature tension: corporate authority
+  through typographic restraint. Wins over Tailwind's font-weight utilities
+  because this rule is non-layered.
+*/
+html.design-ibm h1,
+html.design-ibm h2 {
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+/* ── 0px border-radius — Carbon is fundamentally rectangular ─────────────── */
+html.design-ibm .rounded-pill,
+html.design-ibm .rounded-card,
+html.design-ibm .rounded-card-lg,
+html.design-ibm .rounded-md {
+  border-radius: 0;
+}
+
+/* ── IBM Blue 60 (#0f62fe) replaces the green brand accent ──────────────── */
+html.design-ibm .text-brand             { color: #0f62fe; }
+html.design-ibm .bg-brand               { background-color: #0f62fe; }
+html.design-ibm .border-brand           { border-color: #0f62fe; }
+
+/* Brand button: green bg + dark text → blue bg + white text */
+html.design-ibm .bg-brand.text-near-black { color: #ffffff; }
+
+/* Nav active underline */
+html.design-ibm span.bg-brand[aria-hidden="true"] { background-color: #0f62fe; }
+
+/* ── Focus ring: IBM Blue ─────────────────────────────────────────────────── */
+html.design-ibm :focus-visible {
+  outline-color: #0f62fe;
+}
+
+/* ── Header: always the IBM dark masthead regardless of page theme ────────── */
+html.design-ibm header {
+  background-color: #161616;
+  border-bottom-color: #393939;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  --fg:     #f4f4f4;
+  --fg-muted: #c6c6c6;
+  --border: #393939;
+  --bg:     #161616;
+}
+
+/* ── Footer: dark in IBM ─────────────────────────────────────────────────── */
+html.design-ibm footer {
+  background-color: #161616;
+  border-top-color: #393939;
+  --fg:     #f4f4f4;
+  --fg-muted: #c6c6c6;
+  --border: #393939;
+}
+
+/* ── Switcher bar compensation: keep content clear of the fixed 36px bar ─── */
+html.design-ibm ~ * .main-content,
+.design-preview-active main {
+  padding-bottom: 2.25rem;
+}

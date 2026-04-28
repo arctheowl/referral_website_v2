@@ -1,59 +1,59 @@
 @import "tailwindcss";
 
 /*
-  Palette: OKLCH throughout. All neutrals tinted toward hue 159 (brand green)
-  at chroma 0.006-0.010 — invisible individually, cohesive as a system.
-  Dark mode is the primary render target; light overrides via media query.
+  IBM Carbon Design System.
+  Dark mode (Gray 100 theme) is the primary render target;
+  light mode via system preference or manual toggle.
 */
 
 /* ─── Dark mode first (default) ─────────────────────────────────────────── */
 :root {
-  --bg:        oklch(10.5% 0.008 159);   /* near-black, green-warm */
-  --bg-card:   oklch(13.8% 0.006 159);   /* card surface */
-  --fg:        oklch(93.6% 0.004 159);   /* near-white */
-  --fg-muted:  oklch(65.8% 0.005 159);   /* secondary text */
-  --border:    oklch(100% 0 0 / 0.08);   /* white 8% */
-  --border-md: oklch(100% 0 0 / 0.13);   /* white 13% */
-  --shadow-card: rgba(0, 0, 0, 0.38) 0px 2px 4px;
-  --shadow-btn:  rgba(0, 0, 0, 0.38) 0px 1px 2px;
+  --bg:        #161616;   /* IBM Gray 100 */
+  --bg-card:   #262626;   /* IBM Gray 90 */
+  --fg:        #f4f4f4;   /* IBM Gray 10 */
+  --fg-muted:  #c6c6c6;   /* IBM Gray 30 */
+  --border:    #393939;   /* IBM Gray 80 */
+  --border-md: #525252;   /* IBM Gray 70 */
+  --shadow-card: none;
+  --shadow-btn:  none;
 }
 
-/* ─── Light mode: system preference (when no manual override) ────────────── */
+/* ─── Light mode: system preference ─────────────────────────────────────── */
 @media (prefers-color-scheme: light) {
   :root:not(.dark) {
-    --bg:        oklch(99.5% 0.003 159);
-    --bg-card:   oklch(99.5% 0.003 159);
-    --fg:        oklch(10.5% 0.008 159);
-    --fg-muted:  oklch(46.5% 0.006 159);
-    --border:    oklch(0% 0 0 / 0.05);
-    --border-md: oklch(0% 0 0 / 0.08);
-    --shadow-card: rgba(0, 0, 0, 0.03) 0px 2px 4px;
-    --shadow-btn:  rgba(0, 0, 0, 0.06) 0px 1px 2px;
+    --bg:        #ffffff;
+    --bg-card:   #f4f4f4;   /* IBM Gray 10 */
+    --fg:        #161616;   /* IBM Gray 100 */
+    --fg-muted:  #525252;   /* IBM Gray 70 */
+    --border:    #c6c6c6;   /* IBM Gray 30 */
+    --border-md: #e0e0e0;   /* IBM Gray 20 */
+    --shadow-card: none;
+    --shadow-btn:  none;
   }
 }
 
 /* ─── Light mode: manual toggle ──────────────────────────────────────────── */
 html.light {
-  --bg:        oklch(99.5% 0.003 159);
-  --bg-card:   oklch(99.5% 0.003 159);
-  --fg:        oklch(10.5% 0.008 159);
-  --fg-muted:  oklch(46.5% 0.006 159);
-  --border:    oklch(0% 0 0 / 0.05);
-  --border-md: oklch(0% 0 0 / 0.08);
-  --shadow-card: rgba(0, 0, 0, 0.03) 0px 2px 4px;
-  --shadow-btn:  rgba(0, 0, 0, 0.06) 0px 1px 2px;
+  --bg:        #ffffff;
+  --bg-card:   #f4f4f4;
+  --fg:        #161616;
+  --fg-muted:  #525252;
+  --border:    #c6c6c6;
+  --border-md: #e0e0e0;
+  --shadow-card: none;
+  --shadow-btn:  none;
 }
 
-/* ─── Dark mode: manual toggle (overrides system light preference) ───────── */
+/* ─── Dark mode: manual toggle ───────────────────────────────────────────── */
 html.dark {
-  --bg:        oklch(10.5% 0.008 159);
-  --bg-card:   oklch(13.8% 0.006 159);
-  --fg:        oklch(93.6% 0.004 159);
-  --fg-muted:  oklch(65.8% 0.005 159);
-  --border:    oklch(100% 0 0 / 0.08);
-  --border-md: oklch(100% 0 0 / 0.13);
-  --shadow-card: rgba(0, 0, 0, 0.38) 0px 2px 4px;
-  --shadow-btn:  rgba(0, 0, 0, 0.38) 0px 1px 2px;
+  --bg:        #161616;
+  --bg-card:   #262626;
+  --fg:        #f4f4f4;
+  --fg-muted:  #c6c6c6;
+  --border:    #393939;
+  --border-md: #525252;
+  --shadow-card: none;
+  --shadow-btn:  none;
 }
 
 /* ─── Tailwind design tokens ─────────────────────────────────────────────── */
@@ -66,48 +66,80 @@ html.dark {
   --color-border:    var(--border);
   --color-border-md: var(--border-md);
 
-  /* Brand — used only for CTAs, hover states, focus rings, hero accent */
-  --color-brand:       oklch(79.3% 0.177 159);   /* #18E299 */
-  --color-brand-light: oklch(96.5% 0.040 152);   /* #d4fae8 */
-  --color-brand-deep:  oklch(56.4% 0.148 158);   /* #0fa76e */
-  --color-near-black:  oklch(10.5% 0.008 159);   /* #0d0d0d */
+  /* Brand — IBM Blue 60 */
+  --color-brand:       #0f62fe;   /* IBM Blue 60 */
+  --color-brand-light: #edf5ff;   /* IBM Blue 10 */
+  --color-brand-deep:  #0043ce;   /* IBM Blue 70 */
+  --color-near-black:  #161616;   /* IBM Gray 100 */
 
-  /* Typography */
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-geist-mono);
+  /* Typography — IBM Plex family */
+  --font-sans: var(--font-ibm-plex-sans);
+  --font-mono: var(--font-ibm-plex-mono);
 
-  /* Radius */
-  --radius-pill:    9999px;
-  --radius-card:    1rem;
-  --radius-card-lg: 1.5rem;
+  /* Radius — IBM Carbon is fundamentally rectangular */
+  --radius-pill:    0px;
+  --radius-card:    0px;
+  --radius-card-lg: 0px;
 }
 
 /* ─── Base styles ────────────────────────────────────────────────────────── */
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-inter), Inter, system-ui, -apple-system, sans-serif;
+  font-family: var(--font-ibm-plex-sans), 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+  IBM Carbon display heading weight: 300 (Light).
+  Non-layered rule wins over Tailwind's @layer utility classes.
+*/
+h1, h2 {
+  font-weight: 300;
+}
+
+/*
+  Brand button: IBM Blue 60 background needs white text.
+  The brand variant uses text-near-black (#161616) which has poor
+  contrast against Blue 60 — this selector overrides it.
+*/
+.bg-brand.text-near-black {
+  color: #ffffff;
+}
+
+/* ─── Header: IBM dark masthead — permanent ──────────────────────────────── */
+header {
+  background-color: #161616;
+  border-bottom-color: #393939;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  --fg:       #f4f4f4;
+  --fg-muted: #c6c6c6;
+  --border:   #393939;
+  --bg:       #161616;
+}
+
+/* ─── Footer: dark in IBM ────────────────────────────────────────────────── */
+footer {
+  background-color: #161616;
+  border-top-color: #393939;
+  --fg:       #f4f4f4;
+  --fg-muted: #c6c6c6;
+  --border:   #393939;
 }
 
 /* ─── Theme toggle state colors ─────────────────────────────────────────── */
 /*
-  Sun = warm amber (the colour of actual sunlight).
-  Moon = cool indigo (the colour of actual moonlight).
-  Each state reads as a semantic cue, not decoration.
+  Sun = warm amber. Moon = cool indigo.
   Classes live outside @layer so they override Tailwind utilities in the cascade.
 */
-.toggle-sun {
-  color: oklch(78% 0.17 72);
-}
+.toggle-sun { color: oklch(78% 0.17 72); }
 .toggle-sun:hover {
   color: oklch(84% 0.19 72);
   background-color: oklch(78% 0.17 72 / 0.08);
 }
 
-.toggle-moon {
-  color: oklch(54% 0.20 265);
-}
+.toggle-moon { color: oklch(54% 0.20 265); }
 .toggle-moon:hover {
   color: oklch(46% 0.22 265);
   background-color: oklch(54% 0.20 265 / 0.08);
@@ -136,112 +168,8 @@ body {
   }
 }
 
-/* ─── Focus ring ─────────────────────────────────────────────────────────── */
+/* ─── Focus ring: IBM Blue 60 ────────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid oklch(79.3% 0.177 159);
+  outline: 2px solid #0f62fe;
   outline-offset: 2px;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   IBM Carbon Design Override  (html.design-ibm)
-   Non-layered rules here win over Tailwind's @layer utilities by cascade.
-   Covers: IBM gray palette, IBM Plex fonts, 0px radius, IBM Blue 60 brand,
-   always-dark header/footer, and light-weight display headings.
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* ── IBM light palette (default for IBM Carbon) ──────────────────────────── */
-html.design-ibm:not(.dark) {
-  --bg:          #ffffff;
-  --bg-card:     #f4f4f4;
-  --fg:          #161616;
-  --fg-muted:    #525252;
-  --border:      #c6c6c6;
-  --border-md:   #e0e0e0;
-  --shadow-card: none;
-  --shadow-btn:  none;
-}
-
-/* ── IBM dark palette (Gray 100 theme) ───────────────────────────────────── */
-html.design-ibm.dark {
-  --bg:          #161616;
-  --bg-card:     #262626;
-  --fg:          #f4f4f4;
-  --fg-muted:    #c6c6c6;
-  --border:      #393939;
-  --border-md:   #525252;
-  --shadow-card: none;
-  --shadow-btn:  none;
-}
-
-/* ── IBM Plex Sans for body copy ─────────────────────────────────────────── */
-html.design-ibm body {
-  font-family: var(--font-ibm-plex-sans, 'IBM Plex Sans'), 'Helvetica Neue', Arial, sans-serif;
-  letter-spacing: 0;
-}
-
-/* IBM Plex Mono replaces Geist Mono for technical labels */
-html.design-ibm .font-mono {
-  font-family: var(--font-ibm-plex-mono, 'IBM Plex Mono'), Menlo, 'Courier New', monospace;
-}
-
-/*
-  Light display weight — Carbon's signature tension: corporate authority
-  through typographic restraint. Wins over Tailwind's font-weight utilities
-  because this rule is non-layered.
-*/
-html.design-ibm h1,
-html.design-ibm h2 {
-  font-weight: 300;
-  letter-spacing: 0;
-}
-
-/* ── 0px border-radius — Carbon is fundamentally rectangular ─────────────── */
-html.design-ibm .rounded-pill,
-html.design-ibm .rounded-card,
-html.design-ibm .rounded-card-lg,
-html.design-ibm .rounded-md {
-  border-radius: 0;
-}
-
-/* ── IBM Blue 60 (#0f62fe) replaces the green brand accent ──────────────── */
-html.design-ibm .text-brand             { color: #0f62fe; }
-html.design-ibm .bg-brand               { background-color: #0f62fe; }
-html.design-ibm .border-brand           { border-color: #0f62fe; }
-
-/* Brand button: green bg + dark text → blue bg + white text */
-html.design-ibm .bg-brand.text-near-black { color: #ffffff; }
-
-/* Nav active underline */
-html.design-ibm span.bg-brand[aria-hidden="true"] { background-color: #0f62fe; }
-
-/* ── Focus ring: IBM Blue ─────────────────────────────────────────────────── */
-html.design-ibm :focus-visible {
-  outline-color: #0f62fe;
-}
-
-/* ── Header: always the IBM dark masthead regardless of page theme ────────── */
-html.design-ibm header {
-  background-color: #161616;
-  border-bottom-color: #393939;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  --fg:     #f4f4f4;
-  --fg-muted: #c6c6c6;
-  --border: #393939;
-  --bg:     #161616;
-}
-
-/* ── Footer: dark in IBM ─────────────────────────────────────────────────── */
-html.design-ibm footer {
-  background-color: #161616;
-  border-top-color: #393939;
-  --fg:     #f4f4f4;
-  --fg-muted: #c6c6c6;
-  --border: #393939;
-}
-
-/* ── Switcher bar compensation: keep content clear of the fixed 36px bar ─── */
-html.design-ibm ~ * .main-content,
-.design-preview-active main {
-  padding-bottom: 2.25rem;
 }

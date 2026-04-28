@@ -4,18 +4,8 @@ import { ctaLinks } from "@/data/site-data";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      {/* Atmospheric gradient — subtle green wash, dark mode reads as cold glow, light as warmth */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 100% 60% at 50% -20%, oklch(79.3% 0.177 159 / 0.09) 0%, transparent 68%)",
-        }}
-      />
-
-      <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8 pt-20 pb-24 lg:pt-28 lg:pb-32">
+    <section className="border-b border-border">
+      <div className="max-w-[1200px] mx-auto px-6 lg:px-8 pt-20 pb-24 lg:pt-28 lg:pb-32">
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-center">
 
           {/* Left: headline + CTAs */}
@@ -46,9 +36,9 @@ export function Hero() {
                 Book Free Consultation
                 <ArrowRight className="ml-2 w-4 h-4" />
               </LinkButton>
-              <LinkButton href={ctaLinks.evaluation} variant="secondary" size="lg">
+              {/* <LinkButton href={ctaLinks.evaluation} variant="secondary" size="lg">
                 Free On-Site Evaluation
-              </LinkButton>
+              </LinkButton> */}
             </div>
           </div>
 

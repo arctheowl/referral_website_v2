@@ -8,30 +8,7 @@ import {
   verifySignedStatusCookie,
 } from "@/lib/referral-session";
 
-/** Production: any non-canonical host (not localhost / *.vercel.app) gets a 308 to this origin. */
-const CANONICAL_ORIGIN = "https://mustardseedautism.co.uk";
-const CANONICAL_HOSTS = new Set(["mustardseedautism.co.uk", "www.mustardseedautism.co.uk"]);
-
-function canonicalRedirectUrl(request: NextRequest): URL | null {
-  if (process.env.SKIP_CANONICAL_HOST_REDIRECT === "true") {
-    return null;
-  }
-  const hostname = request.nextUrl.hostname.toLowerCase();
-  if (!hostname || CANONICAL_HOSTS.has(hostname)) {
-    return null;
-  }
-  if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]") {
-    return null;
-  }
-  return new URL(`${request.nextUrl.pathname}${request.nextUrl.search}`, CANONICAL_ORIGIN);
-}
-
 export async function middleware(request: NextRequest) {
-  const canonical = canonicalRedirectUrl(request);
-  if (canonical) {
-    return NextResponse.redirect(canonical, 308);
-  }
-
   const { pathname } = request.nextUrl;
 
   if (pathname === "/referral-form" || pathname.startsWith("/referral-form/")) {
@@ -118,6 +95,13 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|_next/webpack-hmr|favicon.ico|robots.txt|sitemap.xml).*)",
+    "/",
+    "/eligibility",
+    "/submitted",
+    "/selected",
+    "/not-selected",
+    "/admin/:path*",
+    "/referral-form",
+    "/referral-form/:path*",
   ],
 };

@@ -6,12 +6,12 @@
 
 BEGIN;
 
--- Child tables first (waitlist may FK to user_sessions).
-TRUNCATE TABLE waitlist RESTART IDENTITY;
-
-TRUNCATE TABLE eligibility_checks RESTART IDENTITY;
-
-TRUNCATE TABLE user_sessions RESTART IDENTITY;
+-- Truncate cohort tables together so FKs (e.g. waitlist -> user_sessions) are satisfied.
+TRUNCATE TABLE
+  waitlist,
+  eligibility_checks,
+  user_sessions
+RESTART IDENTITY;
 
 -- Newsletter signups from the previous round (table may exist in production).
 DO $$

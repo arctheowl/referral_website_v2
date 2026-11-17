@@ -79,6 +79,7 @@ export const createTables = async () => {
       parent_name VARCHAR(255),
       primary_email VARCHAR(255),
       phone_number VARCHAR(50),
+      secondary_phone VARCHAR(50),
       secondary_email VARCHAR(255),
       diagnosis VARCHAR(255),
       school_year VARCHAR(50) NOT NULL,
@@ -90,6 +91,7 @@ export const createTables = async () => {
     );
   `;
   await sql`ALTER TABLE eligibility_checks ADD COLUMN IF NOT EXISTS phone_number VARCHAR(50);`;
+  await sql`ALTER TABLE eligibility_checks ADD COLUMN IF NOT EXISTS secondary_phone VARCHAR(50);`;
   await sql`ALTER TABLE eligibility_checks ADD COLUMN IF NOT EXISTS selection_status BOOLEAN;`;
   await sql`
     DO $$

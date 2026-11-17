@@ -22,6 +22,8 @@ interface EligibilityCheckEntry {
   session_id: string;
   parent_name: string;
   primary_email: string;
+  phone_number: string | null;
+  secondary_phone: string | null;
   secondary_email: string | null;
   diagnosis: string;
   school_year: string;
@@ -205,6 +207,9 @@ export default function AdminDashboard() {
     const headers = [
       "Parent Name",
       "Email",
+      "Secondary Email",
+      "Phone",
+      "Secondary Phone",
       "Eligible",
       "Selection Status",
       "Submitted",
@@ -213,6 +218,9 @@ export default function AdminDashboard() {
     const rows = sortedEligibilityChecks.map((entry) => [
       entry.parent_name,
       entry.primary_email,
+      entry.secondary_email ?? "",
+      entry.phone_number ?? "",
+      entry.secondary_phone ?? "",
       entry.eligible ? "Yes" : "No",
       getSelectionStatusLabel(entry.selection_status as boolean | string | null),
       entry.submitted_at ?? "",
@@ -556,6 +564,15 @@ export default function AdminDashboard() {
                         Email
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                        Secondary Email
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                        Phone
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                        Secondary Phone
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                         Eligible
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
@@ -571,6 +588,15 @@ export default function AdminDashboard() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
                           {entry.primary_email}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
+                          {entry.secondary_email || "-"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
+                          {entry.phone_number || "-"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
+                          {entry.secondary_phone || "-"}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
                           {entry.eligible ? "Yes" : "No"}

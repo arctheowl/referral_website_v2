@@ -11,6 +11,7 @@ interface EligibilityData {
   parentName: string;
   primaryEmail: string;
   phoneNumber: string;
+  secondaryPhone: string;
   secondaryEmail: string;
   diagnosis: string;
   schoolYear: string;
@@ -73,6 +74,7 @@ export default function EligibilityPage() {
     parentName: "",
     primaryEmail: "",
     phoneNumber: "",
+    secondaryPhone: "",
     secondaryEmail: "",
     diagnosis: "",
     schoolYear: "",
@@ -192,6 +194,7 @@ export default function EligibilityPage() {
           parentName: eligibilityData.parentName,
           primaryEmail: eligibilityData.primaryEmail,
           phoneNumber: eligibilityData.phoneNumber,
+          secondaryPhone: eligibilityData.secondaryPhone || undefined,
           secondaryEmail: eligibilityData.secondaryEmail || undefined,
           diagnosis: eligibilityData.diagnosis,
           schoolYear: eligibilityData.schoolYear,
@@ -203,6 +206,7 @@ export default function EligibilityPage() {
           parentName: eligibilityData.parentName,
           primaryEmail: eligibilityData.primaryEmail,
           phoneNumber: eligibilityData.phoneNumber,
+          secondaryPhone: eligibilityData.secondaryPhone || undefined,
           secondaryEmail: eligibilityData.secondaryEmail || undefined,
           diagnosis: eligibilityData.diagnosis,
           schoolYear: eligibilityData.schoolYear,
@@ -302,7 +306,6 @@ export default function EligibilityPage() {
                 />
               </div>
 
-              {/* Secondary Email (optional) */}
               {/* Phone Number */}
               <div>
                 <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center">
@@ -316,6 +319,21 @@ export default function EligibilityPage() {
                   onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 bg-white"
                   placeholder="Your phone number"
+                />
+              </div>
+
+              {/* Secondary Phone (optional) */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2 flex items-center">
+                  <PhoneIcon className="h-5 w-5 mr-2 text-purple-600" />
+                  Secondary Phone <span className="text-gray-500 font-normal">(optional)</span>
+                </label>
+                <input
+                  type="tel"
+                  value={eligibilityData.secondaryPhone}
+                  onChange={(e) => handleInputChange('secondaryPhone', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 bg-white"
+                  placeholder="Second contact phone (e.g. other parent)"
                 />
               </div>
 

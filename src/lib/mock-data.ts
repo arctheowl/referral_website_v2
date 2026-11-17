@@ -7,6 +7,7 @@ export interface MockEligibility {
   parent_name: string;
   primary_email: string;
   phone_number: string;
+  secondary_phone?: string;
   secondary_email?: string;
   diagnosis: string;
   school_year: string;

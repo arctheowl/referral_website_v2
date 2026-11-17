@@ -335,6 +335,8 @@ export async function getEligibleQueueEntries() {
         ec.session_id,
         ec.parent_name,
         ec.primary_email,
+        ec.phone_number,
+        ec.secondary_phone,
         ec.secondary_email,
         ec.school_year,
         ec.catchment_town,
@@ -374,6 +376,8 @@ export async function getEligibilityChecks() {
             ec.session_id,
             ec.parent_name,
             ec.primary_email,
+            ec.phone_number,
+            ec.secondary_phone,
             ec.secondary_email,
             ec.diagnosis,
             ec.school_year,
@@ -394,6 +398,8 @@ export async function getEligibilityChecks() {
             ec.session_id,
             ec.parent_name,
             ec.primary_email,
+            ec.phone_number,
+            ec.secondary_phone,
             ec.secondary_email,
             ec.diagnosis,
             ec.school_year,
@@ -470,6 +476,7 @@ export async function submitEligibilityCheck(
     parentName: string;
     primaryEmail: string;
     phoneNumber: string;
+    secondaryPhone?: string;
     secondaryEmail?: string;
     diagnosis: string;
     schoolYear: string;
@@ -503,8 +510,8 @@ export async function submitEligibilityCheck(
 
     // Insert eligibility check
     await sql`
-      INSERT INTO eligibility_checks (session_id, parent_name, primary_email, phone_number, secondary_email, diagnosis, school_year, catchment_town, can_attend_hospital, eligible)
-      VALUES (${normalizedSessionId}, ${eligibilityData.parentName}, ${eligibilityData.primaryEmail}, ${eligibilityData.phoneNumber}, ${eligibilityData.secondaryEmail ?? null}, ${eligibilityData.diagnosis}, ${eligibilityData.schoolYear}, ${eligibilityData.catchmentTown}, ${eligibilityData.canAttendHospital}, ${eligible});
+      INSERT INTO eligibility_checks (session_id, parent_name, primary_email, phone_number, secondary_phone, secondary_email, diagnosis, school_year, catchment_town, can_attend_hospital, eligible)
+      VALUES (${normalizedSessionId}, ${eligibilityData.parentName}, ${eligibilityData.primaryEmail}, ${eligibilityData.phoneNumber}, ${eligibilityData.secondaryPhone ?? null}, ${eligibilityData.secondaryEmail ?? null}, ${eligibilityData.diagnosis}, ${eligibilityData.schoolYear}, ${eligibilityData.catchmentTown}, ${eligibilityData.canAttendHospital}, ${eligible});
     `;
 
     await createUserSession(normalizedSessionId);

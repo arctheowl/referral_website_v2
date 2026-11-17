@@ -42,6 +42,7 @@ export function useDemoEligibility(sessionId: string) {
     parentName: string;
     primaryEmail: string;
     phoneNumber: string;
+    secondaryPhone?: string;
     secondaryEmail?: string;
     diagnosis: string;
     schoolYear: string;
@@ -54,6 +55,7 @@ export function useDemoEligibility(sessionId: string) {
       parent_name: data.parentName,
       primary_email: data.primaryEmail,
       phone_number: data.phoneNumber,
+      secondary_phone: data.secondaryPhone,
       secondary_email: data.secondaryEmail,
       diagnosis: data.diagnosis,
       school_year: data.schoolYear,

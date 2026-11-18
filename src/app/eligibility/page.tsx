@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { CheckCircleIcon, XCircleIcon, AcademicCapIcon, MapPinIcon, BuildingOfficeIcon, UserIcon, EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { submitEligibilityCheck, bootstrapReferralSession } from "../actions";
 import { isTestingMode, isDemoMode } from "@/lib/config";
+import { directPagePreview } from "@/lib/preview";
 import { useDemoEligibility } from "@/lib/demo-hooks";
 
 interface EligibilityData {
@@ -97,6 +98,11 @@ export default function EligibilityPage() {
       
       setSessionId(existingSessionId);
 
+      if (directPagePreview) {
+        setLoading(false);
+        return;
+      }
+
       const bootstrap = await bootstrapReferralSession(existingSessionId);
       if (bootstrap.status === "rejected") {
         router.replace("/not-selected");
@@ -113,7 +119,6 @@ export default function EligibilityPage() {
 
       // Check if eligibility already submitted
       if (isDemoMode()) {
-        // In demo mode, check mock data
         const { initializeMockData } = await import("@/lib/mock-data");
         initializeMockData();
         setLoading(false);

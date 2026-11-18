@@ -9,6 +9,7 @@ import {
   resolveSelectionOutcome,
 } from "./actions";
 import { isTestingMode, isDemoMode } from "@/lib/config";
+import { directPagePreview } from "@/lib/preview";
 import { getMockEligibility, getMockSession, getMockTimer, runMockRandomSelection } from "@/lib/mock-data";
 
 export default function WaitingRoomNew() {
@@ -42,41 +43,42 @@ export default function WaitingRoomNew() {
         setSessionId(newSessionId);
       }
 
-      const bootstrap = await bootstrapReferralSession(currentSessionId);
-      if (!bootstrap.success) {
-        setError("Unable to verify your session");
-        setLoading(false);
-        return;
-      }
-
-      if (bootstrap.status === "rejected") {
-        router.replace("/not-selected");
-        return;
-      }
-      if (bootstrap.status === "selected") {
-        router.replace("/selected");
-        return;
-      }
-      if (bootstrap.status === "completed") {
-        router.replace("/submitted");
-        return;
-      }
-
-      // Check eligibility status (skip in testing/demo mode)
-      if (isDemoMode()) {
-        // In demo mode, check mock eligibility
-        const { initializeMockData } = await import("@/lib/mock-data");
-        initializeMockData();
-        const mockEligibility = getMockEligibility(currentSessionId);
-        if (!mockEligibility) {
-          console.log("No eligibility check found in demo mode, redirecting to eligibility page");
-          router.push('/eligibility');
+      if (!directPagePreview) {
+        const bootstrap = await bootstrapReferralSession(currentSessionId);
+        if (!bootstrap.success) {
+          setError("Unable to verify your session");
+          setLoading(false);
           return;
         }
-      } else if (!isTestingMode() && !bootstrap.hasEligibility) {
-        console.log("No eligibility check found, redirecting to eligibility page");
-        router.push('/eligibility');
-        return;
+
+        if (bootstrap.status === "rejected") {
+          router.replace("/not-selected");
+          return;
+        }
+        if (bootstrap.status === "selected") {
+          router.replace("/selected");
+          return;
+        }
+        if (bootstrap.status === "completed") {
+          router.replace("/submitted");
+          return;
+        }
+
+        // Check eligibility status (skip in testing/demo mode)
+        if (isDemoMode()) {
+          const { initializeMockData } = await import("@/lib/mock-data");
+          initializeMockData();
+          const mockEligibility = getMockEligibility(currentSessionId);
+          if (!mockEligibility) {
+            console.log("No eligibility check found in demo mode, redirecting to eligibility page");
+            router.push("/eligibility");
+            return;
+          }
+        } else if (!isTestingMode() && !bootstrap.hasEligibility) {
+          console.log("No eligibility check found, redirecting to eligibility page");
+          router.push("/eligibility");
+          return;
+        }
       }
       
       // Load data from database or mock data
@@ -106,9 +108,9 @@ export default function WaitingRoomNew() {
             setLoading(false);
             return;
           }
-          const endTime = new Date(countdownTimer.end_time).getTime();
-          const now = new Date().getTime();
-          const timeLeft = Math.max(0, endTime - now);
+          const endTime = parseCountdownEnd(countdownTimer.end_time);
+          const now = Date.now();
+          const timeLeft = Number.isFinite(endTime) ? Math.max(0, endTime - now) : 0;
           setCountdown(timeLeft);
           setCountdownLoaded(true);
           console.log("Database countdown loaded:", timeLeft);
@@ -156,6 +158,7 @@ export default function WaitingRoomNew() {
 
   // Handle redirect when countdown completes using persisted DB selection.
   useEffect(() => {
+    if (directPagePreview) return;
     if (!countdownLoaded || !countdownCompleted || userSelectionTriggered || !sessionId) return;
 
     console.log("Countdown completed - redirecting user");
@@ -208,13 +211,27 @@ export default function WaitingRoomNew() {
     })();
   }, [countdownLoaded, countdownCompleted, userSelectionTriggered, sessionId, router]);
 
+  const parseCountdownEnd = (value: unknown) => {
+    if (value instanceof Date) return value.getTime();
+    const raw = String(value ?? "").trim();
+    if (!raw) return Number.NaN;
+    const normalized = /^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}/.test(raw)
+      ? `${raw.replace(" ", "T")}${/[zZ]|[+-]\d{2}:?\d{2}$/.test(raw) ? "" : "Z"}`
+      : raw;
+    return new Date(normalized).getTime();
+  };
+
   const formatTime = (milliseconds: number) => {
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
+    const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
+    const clock = `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    return days > 0 ? `${days}d ${clock}` : clock;
   };
 
   if (loading) {

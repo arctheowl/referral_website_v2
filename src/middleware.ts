@@ -7,6 +7,7 @@ import {
   verifySignedSessionCookie,
   verifySignedStatusCookie,
 } from "@/lib/referral-session";
+import { directPagePreview } from "@/lib/preview";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -20,7 +21,7 @@ export async function middleware(request: NextRequest) {
   const isDemoMode =
     process.env.DEMO_MODE === "true" || process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 
-  if (!isTestingMode && !isDemoMode) {
+  if (!directPagePreview && !isTestingMode && !isDemoMode) {
     const sessionCookie = request.cookies.get(REFERRAL_SESSION_COOKIE)?.value;
     const statusCookie = request.cookies.get(REFERRAL_STATUS_COOKIE)?.value;
     const sessionId = await verifySignedSessionCookie(sessionCookie);

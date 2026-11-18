@@ -108,7 +108,7 @@ export async function getCountdownTimer() {
     const data = await sql`
       SELECT *
       FROM countdown_timer
-      ORDER BY updated_at DESC, id DESC
+      ORDER BY is_active DESC, updated_at DESC NULLS LAST, id DESC
       LIMIT 1;
     `;
     return data[0] || null;

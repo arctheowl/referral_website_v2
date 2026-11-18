@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { XCircleIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { isDemoMode } from "@/lib/config";
+import { directPagePreview } from "@/lib/preview";
 import { getAuthorizedFlowState } from "@/app/actions";
 import { getMockEffectiveSessionStatus } from "@/lib/mock-data";
 
@@ -51,7 +52,7 @@ export default function FlowEnforcement({
     const enforceFlow = async () => {
       const gate = isGateStatus(requiredStatus);
 
-      if (!gate) {
+      if (!gate || directPagePreview) {
         setLoading(false);
         return;
       }
